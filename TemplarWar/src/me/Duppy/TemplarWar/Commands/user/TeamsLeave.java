@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.Duppy.TemplarWar.Commands.CMD;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
+import net.md_5.bungee.api.ChatColor;
 
 public class TeamsLeave implements CMD {
 
@@ -13,7 +14,8 @@ public class TeamsLeave implements CMD {
 	public void Execute(CommandSender sender, String[] args) {
 		Player p = (Player) sender;
 		Team t = TeamManager.getTeam(args[1]);
-		t.removePlayer(p.getUniqueId());
+		t.removePlayer(p);
+		sender.sendMessage(ChatColor.GREEN + "You have left "+t.getName());
 	}
 
 	@Override

@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+
 import me.Duppy.TemplarWar.Main.ConfigManager;
 
 public class TeamManager {
 	private static ArrayList<Team> teams;
 	private static ConfigManager cfgm = new ConfigManager();
-	
+	private static ScoreboardManager manager;
+	public static Scoreboard board;
 	//Begin Getters and Setters
 	public ArrayList<Team> getTeams() {
 		return teams;
@@ -22,6 +27,8 @@ public class TeamManager {
 	
 	//Begin Methods
 	public static void setupTeams() {
+		manager = Bukkit.getScoreboardManager();
+		board = manager.getMainScoreboard();
 		teams = new ArrayList<Team>();
 		for(String team : cfgm.getTeams().getKeys(false)) {
 			Team t = new Team();
@@ -38,6 +45,7 @@ public class TeamManager {
 			
 			addTeam(t);
 		}
+		removeEmptyTeams();
 	}
 	
 	public static void saveTeams() {
@@ -62,8 +70,11 @@ public class TeamManager {
 	}
 	
 	public static void removeTeam(Team team) {
-		if(teams.contains(team))
+		if(teams.contains(team)) {
 			teams.remove(team);
+			if(board.getTeam(team.getName())!= null)
+				board.getTeam(team.getName()).unregister();
+		}
 	}
 	
 	public static boolean teamExists(String teamName) {
@@ -87,5 +98,26 @@ public class TeamManager {
 				return t;
 		return null;
 	}
+	
+	public static void removeEmptyTeams() {
+		ArrayList<String> keepTeams = new ArrayList<String>();
+		ArrayList<String> removeTeams = new ArrayList<String>();
+		
+		for(Team t : teams) {
+			keepTeams.add(t.getName());
+		}
+		
+		for(org.bukkit.scoreboard.Team t : board.getTeams()) {
+			if(!keepTeams.contains(t.getName())) {
+				removeTeams.add(t.getName());
+			}
+		}
+		
+		for(String e : removeTeams) {
+			board.getTeam(e).unregister();
+		}
+		
+	}
+	
 	//End Methods
 }

@@ -21,6 +21,7 @@ public class Commands implements CommandExecutor {
 			
 			if(args.length == 0) {
 				sender.sendMessage(ChatColor.RED + "Invalid arguments");
+				return true;
 			}
 			
 			//Begin commands
@@ -28,7 +29,6 @@ public class Commands implements CommandExecutor {
 				if(args.length == 2) {
 					if(create.canExecute(sender, args)) {
 						create.Execute(sender, args);
-						sender.sendMessage(ChatColor.GREEN + "You have created "+args[1]);
 						return true;
 					}
 					else {
@@ -46,7 +46,6 @@ public class Commands implements CommandExecutor {
 				if(args.length == 2) {
 					if(delete.canExecute(sender, args)) {
 						delete.Execute(sender, args);
-						sender.sendMessage(ChatColor.GREEN + "You have deleted "+args[1]);
 						return true;
 					}
 					else {
@@ -64,7 +63,6 @@ public class Commands implements CommandExecutor {
 				if(args.length == 2) {
 					if(join.canExecute(sender, args)) {
 						join.Execute(sender, args);
-						sender.sendMessage(ChatColor.GREEN + "You have joined "+args[1]);
 						return true;
 					}
 					else {
@@ -82,7 +80,6 @@ public class Commands implements CommandExecutor {
 				if(args.length == 2) {
 					if(leave.canExecute(sender, args)) {
 						leave.Execute(sender, args);
-						sender.sendMessage(ChatColor.GREEN + "You have left "+args[1]);
 						return true;
 					}
 					else {

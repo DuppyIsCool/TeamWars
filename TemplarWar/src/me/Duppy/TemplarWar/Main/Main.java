@@ -9,6 +9,7 @@ public class Main extends JavaPlugin{
 	private ConfigManager cfgm;
 	public void onEnable() {
 		Plugin.plugin = this;
+		
 		this.getCommand("teams").setExecutor(new Commands());
 		getConfig().options().copyDefaults(true);
 		loadConfigManager();
