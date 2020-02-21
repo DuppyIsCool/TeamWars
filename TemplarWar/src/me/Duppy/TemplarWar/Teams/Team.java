@@ -3,16 +3,17 @@ package me.Duppy.TemplarWar.Teams;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.ChatColor;
+import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 
 public class Team {
 	private int points;
 	private ArrayList<UUID> players;
 	private String name;
 	private org.bukkit.scoreboard.Team boardTeam;
-	
+	private ArrayList<Guild> guilds;
 	//Empty Constructor
 	public Team() {
 		players = new ArrayList<UUID>();
@@ -22,7 +23,8 @@ public class Team {
 		players = new ArrayList<UUID>();
 		this.name = name;
 		boardTeam = TeamManager.board.registerNewTeam(name);
-		boardTeam.setPrefix(ChatColor.RED + "[" +name + "] "+ChatColor.WHITE);
+		boardTeam.setPrefix(ChatColor.GOLD + "" + name + " ");
+		boardTeam.setColor(ChatColor.YELLOW);
 	}
 	//Start Getter and Setters
 	public ArrayList<UUID> getPlayers() {
@@ -58,6 +60,14 @@ public class Team {
 	public void setBoardTeam(org.bukkit.scoreboard.Team boardTeam) {
 		this.boardTeam = boardTeam;
 	}
+	
+	public ArrayList<Guild> getGuilds() {
+		return guilds;
+	}
+
+	public void setGuilds(ArrayList<Guild> guilds) {
+		this.guilds = guilds;
+	}
 	//End Getter and Setters
 	
 	
@@ -88,4 +98,5 @@ public class Team {
 		this.points = 0;
 	}
 	//End methods
+
 }

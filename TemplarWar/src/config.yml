@@ -1,0 +1,8 @@
+messages:
+    error:
+        nocommand: "&4That is not a valid command"
+        invalidargs: "&4Invalid Arguments"
+        cannotexecute: "&4You cannot execute that command"
+    guild:
+        guildcreated: "&aGuild creation successful"
+        guilddeleted: "&aGuild deletion successful"

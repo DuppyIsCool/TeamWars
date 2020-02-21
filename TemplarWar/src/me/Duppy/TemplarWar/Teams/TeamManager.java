@@ -34,7 +34,6 @@ public class TeamManager {
 			Team t = new Team();
 			t.setName(team);
 			t.setPoints(cfgm.getTeams().getInt(team + ".points"));
-			
 			//Get String list and convert it into a UUID list
 			ArrayList<UUID> players = new ArrayList<UUID>();
 			for(String e : (ArrayList<String>) cfgm.getTeams().getStringList(team + ".members")) {
@@ -42,7 +41,6 @@ public class TeamManager {
 			}
 			
 			t.setPlayers(players);
-			
 			addTeam(t);
 		}
 		removeEmptyTeams();

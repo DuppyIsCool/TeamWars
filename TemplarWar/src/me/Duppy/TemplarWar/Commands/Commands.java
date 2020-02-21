@@ -4,10 +4,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import me.Duppy.TemplarWar.Commands.user.TeamsCreate;
-import me.Duppy.TemplarWar.Commands.user.TeamsDelete;
-import me.Duppy.TemplarWar.Commands.user.TeamsJoin;
-import me.Duppy.TemplarWar.Commands.user.TeamsLeave;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsCreate;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsDelete;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsJoin;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsLeave;
 import net.md_5.bungee.api.ChatColor;
 
 public class Commands implements CommandExecutor {
@@ -28,13 +28,11 @@ public class Commands implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("create")) {
 				if(args.length == 2) {
 					if(create.canExecute(sender, args)) {
-						create.Execute(sender, args);
+						create.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -45,13 +43,11 @@ public class Commands implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("delete")) {
 				if(args.length == 2) {
 					if(delete.canExecute(sender, args)) {
-						delete.Execute(sender, args);
+						delete.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -62,13 +58,11 @@ public class Commands implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("join")) {
 				if(args.length == 2) {
 					if(join.canExecute(sender, args)) {
-						join.Execute(sender, args);
+						join.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -77,15 +71,13 @@ public class Commands implements CommandExecutor {
 			}
 			
 			if(args[0].equalsIgnoreCase("leave")) {
-				if(args.length == 2) {
+				if(args.length == 1) {
 					if(leave.canExecute(sender, args)) {
-						leave.Execute(sender, args);
+						leave.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
