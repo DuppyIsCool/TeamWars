@@ -2,10 +2,13 @@ package me.Duppy.TemplarWar.Guilds.Guilds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import me.Duppy.TemplarWar.Main.ConfigManager;
 import me.Duppy.TemplarWar.Teams.TeamManager;
@@ -13,14 +16,14 @@ import me.Duppy.TemplarWar.Teams.TeamManager;
 public class GuildManager {
 	private static ArrayList<Guild> guildList = new ArrayList<Guild>();
 	private static ConfigManager cfgm = new ConfigManager();
-	
+	public static Scoreboard mainScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	public static void setupGuilds() {
 		//Cycles through config file and sets up the object ArrayList of guilds
 		for(String guild : cfgm.getGuilds().getKeys(false)) {
 			Guild g = new Guild();
 			g.setName(guild);
 			g.setLives(cfgm.getGuilds().getInt(guild + ".lives"));
-			g.setTeam(TeamManager.getTeam(guild + ".team"));
+			g.setTeam(TeamManager.getTeam(cfgm.getGuilds().getString(guild + ".team")));
 			//Create Home Location
 			if(cfgm.getGuilds().getConfigurationSection(guild + ".home") != null)
 				g.setHome(new Location(Bukkit.getServer().getWorld(cfgm.getGuilds().getString(guild + ".home.world")),
@@ -37,6 +40,18 @@ public class GuildManager {
 			
 			g.setGuildMap(map);
 			
+			//Scoreboard team setup
+			Team t = mainScoreboard.registerNewTeam(g.getName());
+			for (Entry<UUID, String> entry : map.entrySet()) {
+		        t.addEntry(ConfigManager.getPlayername(entry.getKey()));
+		    }
+			
+			//Set the scoreboard team
+			g.setScoreBoardTeam(t);
+			
+			//Update scoreboard team color (and prefix)
+			g.updateColor();
+			
 			//Add guild to guild manager list
 			GuildManager.addGuild(g);
 			
@@ -52,7 +67,7 @@ public class GuildManager {
 		for(Guild g : guildList) {
 			cfgm.getGuilds().createSection(g.toString() + ".members", g.getGuildMap());
 			cfgm.getGuilds().set(g.toString() + ".lives",g.getLives());
-			
+			cfgm.getGuilds().set(g.toString() + ".team", g.getTeam().getName());
 			if(g.getHome() != null) {
 				Location loc = g.getHome();
 				cfgm.getGuilds().set(g.toString() + ".home.x",loc.getBlockX());
@@ -91,8 +106,10 @@ public class GuildManager {
 	
 	//Removes a guild from the guild list
 	public static void removeGuild(Guild guild) {
-		if(guildList.contains(guild))
+		if(guildList.contains(guild)) {
+			mainScoreboard.getTeam(guild.getName()).unregister();
 			guildList.remove(guild);
+		}
 	}
 	
 }

@@ -1,6 +1,7 @@
 package me.Duppy.TemplarWar.Main;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,7 +61,7 @@ public class ConfigManager {
 		return teamcfg;
 	}
 	
-	public FileConfiguration getPlayers() {
+	public static FileConfiguration getPlayers() {
 		return playerscfg;
 	}
 	
@@ -110,6 +111,17 @@ public class ConfigManager {
 	public void reloadPlayers() {
 			playerscfg = YamlConfiguration.loadConfiguration(playersfile);
 			sender.sendMessage(ChatColor.BLUE + "players.yml has been reload");
+	}
+	
+	//Getting Methods
+	public static String getPlayername(UUID uuid) {
+		for(String playerUUID : getPlayers().getKeys(false)) {
+			if(playerUUID.equals(uuid.toString())) {
+				return getPlayers().getString(playerUUID);
+			}
+		}
+		
+		return null;
 	}
 	
 }

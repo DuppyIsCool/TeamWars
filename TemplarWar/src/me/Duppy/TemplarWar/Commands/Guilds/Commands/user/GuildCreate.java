@@ -14,8 +14,7 @@ public class GuildCreate implements CMD{
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		Player p = (Player) sender;
-		Guild g = new Guild(p.getUniqueId());
-		g.setName(args[1]);
+		Guild g = new Guild(p.getUniqueId(),args[1]);
 		GuildManager.addGuild(g);
 		MessageManager.sendMessage(sender, "guild.guildcreated");	
 	}
@@ -26,7 +25,8 @@ public class GuildCreate implements CMD{
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) == null)
 				if(TeamManager.getTeam(p.getUniqueId())!= null)
-					return true;
+					if(check(args[1]) && args[1].length() <= 12)
+						return true;
 		}
 		return false;
 	}
@@ -42,5 +42,18 @@ public class GuildCreate implements CMD{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	private boolean check(String s) {
+	      if (s == null) // checks if the String is null {
+	         return false;
+	      int len = s.length();
+	      for (int i = 0; i < len; i++) {
+	         // checks whether the character is neither a letter nor a digit
+	         // if it is neither a letter nor a digit then it will return false
+	         if ((Character.isLetterOrDigit(s.charAt(i)) == false)) {
+	            return false;
+	         }
+	      }
+	      return true;
+	}
 }

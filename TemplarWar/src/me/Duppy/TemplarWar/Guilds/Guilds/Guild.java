@@ -5,9 +5,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import me.Duppy.TemplarWar.Main.ConfigManager;
 import me.Duppy.TemplarWar.Teams.Team;
+import me.Duppy.TemplarWar.Teams.TeamManager;
 
 //Guild Objects
 public class Guild {
@@ -17,10 +20,17 @@ public class Guild {
 	private String name;
 	private boolean raidable;
 	private Team team;
+	private org.bukkit.scoreboard.Team scoreBoardTeam;
 	public Guild() {
 	}	
-	public Guild(UUID leaderUUID) {
+	public Guild(UUID leaderUUID, String guildName) {
 		guildMap.put(leaderUUID, "LEADER");
+		this.name = guildName;
+		this.team = TeamManager.getTeam(leaderUUID);
+		//Setup the scoreboard team
+		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(guildName);
+		updateColor();
+		this.scoreBoardTeam.addEntry(ConfigManager.getPlayername(leaderUUID));
 	}
 	
 	public HashMap<UUID,String> getGuildMap() {
@@ -77,11 +87,40 @@ public class Guild {
 		return this.name;
 	}
 	
+	public org.bukkit.scoreboard.Team getScoreBoardTeam() {
+		return scoreBoardTeam;
+	}
+	public void setScoreBoardTeam(org.bukkit.scoreboard.Team scoreBoardTeam) {
+		this.scoreBoardTeam = scoreBoardTeam;
+	}
+	
 	//METHODS
 	
 	//Adds a member to the guild given their UUID
+	public void updateColor() {
+		switch(this.team.getColor()) {
+		case "&a":
+			this.scoreBoardTeam.setPrefix(ChatColor.GREEN + "" + this.name + " ");
+			break;
+			
+		case "&b":
+			this.scoreBoardTeam.setPrefix(ChatColor.BLUE + "" + this.name + " ");
+			break;
+		
+		case "&c":
+			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" + this.name + " ");
+			break;
+			
+		//This should never call. Team color should also be set or default by red.
+		default:
+			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" + this.name + " ");
+			break;
+		}
+	}
+	
 	public void addMember(UUID uuid) {
 		if(!(this.guildMap.containsKey(uuid))) {
+			this.scoreBoardTeam.addEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 			guildMap.put(uuid, "MEMBER");
 		}
 	}
@@ -96,10 +135,12 @@ public class Guild {
 					
 				case "ADMIN":
 					guildMap.remove(uuid);
+					this.scoreBoardTeam.removeEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 					break;
 					
 				case "MEMBER":
 					guildMap.remove(uuid);
+					this.scoreBoardTeam.removeEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 					break;
 					
 			}

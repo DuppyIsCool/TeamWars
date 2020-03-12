@@ -13,7 +13,7 @@ public class TeamsCreate implements CMD{
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		Player p = (Player) sender;
-		Team t = new Team(args[1]);
+		Team t = new Team(args[1], p.getUniqueId());
 		t.setPoints(0);
 		t.addPlayer(p);
 		TeamManager.addTeam(t);
@@ -26,10 +26,10 @@ public class TeamsCreate implements CMD{
 			Player p = (Player) sender;
 			if(p.hasPermission("teams.create")) {
 				if(TeamManager.getTeam(p.getUniqueId()) == null) {
-					if(args[1].length() <= 16)
+					if(args[1].length() <= 12 && check(args[1]))
 						return true;
 					else {
-						sender.sendMessage(ChatColor.RED + "Error: Team names must be less than 16 characters");
+						sender.sendMessage(ChatColor.RED + "Error: Team names must be less than 12 characters");
 						return false;
 					}
 				}
@@ -56,6 +56,20 @@ public class TeamsCreate implements CMD{
 	public String getUsage() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private boolean check(String s) {
+	      if (s == null) // checks if the String is null {
+	         return false;
+	      int len = s.length();
+	      for (int i = 0; i < len; i++) {
+	         // checks whether the character is neither a letter nor a digit
+	         // if it is neither a letter nor a digit then it will return false
+	         if ((Character.isLetterOrDigit(s.charAt(i)) == false)) {
+	            return false;
+	         }
+	      }
+	      return true;
 	}
 
 }
