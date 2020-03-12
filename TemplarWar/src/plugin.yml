@@ -9,3 +9,8 @@ commands:
         description: Base command used for all team related commands.
         usage: /<command>
         aliases: [team,t]
+    guilds:
+        description: Base command used for all guild related commands.
+        usage: /<command>
+        aliases: [guild,g]
+    

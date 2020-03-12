@@ -5,24 +5,23 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.ChatColor;
+import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 
 public class Team {
 	private int points;
 	private ArrayList<UUID> players;
-	private String name;
-	private org.bukkit.scoreboard.Team boardTeam;
-	
+	private String name,color;
+	private ArrayList<Guild> guilds;
 	//Empty Constructor
 	public Team() {
 		players = new ArrayList<UUID>();
 	}
 	
-	public Team(String name) {
-		players = new ArrayList<UUID>();
+	public Team(String name,UUID creator) {
+		this.players = new ArrayList<UUID>();
+		this.players.add(creator);
+		setColor("red");
 		this.name = name;
-		boardTeam = TeamManager.board.registerNewTeam(name);
-		boardTeam.setPrefix(ChatColor.RED + "[" +name + "] "+ChatColor.WHITE);
 	}
 	//Start Getter and Setters
 	public ArrayList<UUID> getPlayers() {
@@ -51,12 +50,12 @@ public class Team {
 		this.name = name;
 	}
 	
-	public org.bukkit.scoreboard.Team getBoardTeam() {
-		return boardTeam;
+	public ArrayList<Guild> getGuilds() {
+		return guilds;
 	}
 
-	public void setBoardTeam(org.bukkit.scoreboard.Team boardTeam) {
-		this.boardTeam = boardTeam;
+	public void setGuilds(ArrayList<Guild> guilds) {
+		this.guilds = guilds;
 	}
 	//End Getter and Setters
 	
@@ -65,14 +64,12 @@ public class Team {
 	public void addPlayer(Player p) {
 		if(!this.players.contains(p.getUniqueId())) {
 			this.players.add(p.getUniqueId());
-			boardTeam.addEntry(p.getName());
 		}
 	}
 	
 	public void removePlayer(Player p){
 		if(this.players.contains(p.getUniqueId())) {
 			this.players.remove(p.getUniqueId());
-			boardTeam.removeEntry(p.getName());
 		}
 	}
 	
@@ -88,4 +85,26 @@ public class Team {
 		this.points = 0;
 	}
 	//End methods
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		switch(color.toLowerCase()) {
+			case "red":
+				this.color = "&c";
+				break;
+			case "blue":
+				this.color = "&b";
+				break;
+			case "green":
+				this.color = "&a";
+				break;
+			default:
+				this.color = "&c";
+				break;
+		}
+	}
+
 }

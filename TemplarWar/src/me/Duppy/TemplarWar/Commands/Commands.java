@@ -4,19 +4,28 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import me.Duppy.TemplarWar.Commands.user.TeamsCreate;
-import me.Duppy.TemplarWar.Commands.user.TeamsDelete;
-import me.Duppy.TemplarWar.Commands.user.TeamsJoin;
-import me.Duppy.TemplarWar.Commands.user.TeamsLeave;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildCreate;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildDelete;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsCreate;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsDelete;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsJoin;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsLeave;
 import net.md_5.bungee.api.ChatColor;
 
 public class Commands implements CommandExecutor {
+	//TEAMS
 	private TeamsJoin join = new TeamsJoin();
 	private TeamsLeave leave = new TeamsLeave();
 	private TeamsCreate create = new TeamsCreate();
 	private TeamsDelete delete = new TeamsDelete();
+	
+	//GUILDS
+	private GuildCreate gcreate = new GuildCreate();
+	private GuildDelete gdelete = new GuildDelete();
+	
 	@Override
 	public boolean onCommand(CommandSender sender,  Command cmd,  String label, String[] args) {
+		//Team Commands
 		if(cmd.getName().equalsIgnoreCase("teams")) {
 			
 			if(args.length == 0) {
@@ -28,13 +37,11 @@ public class Commands implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("create")) {
 				if(args.length == 2) {
 					if(create.canExecute(sender, args)) {
-						create.Execute(sender, args);
+						create.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -45,13 +52,11 @@ public class Commands implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("delete")) {
 				if(args.length == 2) {
 					if(delete.canExecute(sender, args)) {
-						delete.Execute(sender, args);
+						delete.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -62,13 +67,11 @@ public class Commands implements CommandExecutor {
 			if(args[0].equalsIgnoreCase("join")) {
 				if(args.length == 2) {
 					if(join.canExecute(sender, args)) {
-						join.Execute(sender, args);
+						join.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -77,15 +80,13 @@ public class Commands implements CommandExecutor {
 			}
 			
 			if(args[0].equalsIgnoreCase("leave")) {
-				if(args.length == 2) {
+				if(args.length == 1) {
 					if(leave.canExecute(sender, args)) {
-						leave.Execute(sender, args);
+						leave.execute(sender, args);
 						return true;
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "You cannot execute that command");
+					else
 						return true;
-					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "Invalid arguments");
@@ -96,6 +97,28 @@ public class Commands implements CommandExecutor {
 			
 			sender.sendMessage(ChatColor.RED + args[0] + " is not a valid subcommand");
 			return true;
+		}
+		
+		//Guilds Commands
+		if(cmd.getName().equalsIgnoreCase("guilds")) {
+			sender.sendMessage("hi");
+			if(args[0].equalsIgnoreCase("create")) {
+				if(args.length == 2)
+					if(gcreate.canExecute(sender, args))
+						gcreate.execute(sender, args);
+					else
+						sender.sendMessage("You cannot create a guild!");
+				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("delete")) {
+				if(args.length == 1)
+					if(gdelete.canExecute(sender, args))
+						gdelete.execute(sender, args);
+					else
+						sender.sendMessage("You cannot delete a guild!");
+				return true;
+			}
 		}
 		return true;
 	}

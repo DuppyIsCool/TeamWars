@@ -4,17 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-
 import me.Duppy.TemplarWar.Main.ConfigManager;
 
 public class TeamManager {
 	private static ArrayList<Team> teams;
 	private static ConfigManager cfgm = new ConfigManager();
-	private static ScoreboardManager manager;
-	public static Scoreboard board;
 	//Begin Getters and Setters
 	public ArrayList<Team> getTeams() {
 		return teams;
@@ -27,25 +21,20 @@ public class TeamManager {
 	
 	//Begin Methods
 	public static void setupTeams() {
-		manager = Bukkit.getScoreboardManager();
-		board = manager.getMainScoreboard();
 		teams = new ArrayList<Team>();
 		for(String team : cfgm.getTeams().getKeys(false)) {
 			Team t = new Team();
 			t.setName(team);
 			t.setPoints(cfgm.getTeams().getInt(team + ".points"));
-			
 			//Get String list and convert it into a UUID list
 			ArrayList<UUID> players = new ArrayList<UUID>();
 			for(String e : (ArrayList<String>) cfgm.getTeams().getStringList(team + ".members")) {
 				players.add(UUID.fromString(e));
 			}
-			
+			t.setColor(cfgm.getTeams().getString(team + ".color"));
 			t.setPlayers(players);
-			
 			addTeam(t);
 		}
-		removeEmptyTeams();
 	}
 	
 	public static void saveTeams() {
@@ -61,6 +50,7 @@ public class TeamManager {
 				players.add(u.toString());
 			
 			cfgm.getTeams().set(t.getName() + ".members",players);
+			cfgm.getTeams().set(t.getName() + ".color", t.getColor());
 		}
 	}
 	
@@ -72,8 +62,6 @@ public class TeamManager {
 	public static void removeTeam(Team team) {
 		if(teams.contains(team)) {
 			teams.remove(team);
-			if(board.getTeam(team.getName())!= null)
-				board.getTeam(team.getName()).unregister();
 		}
 	}
 	
@@ -93,31 +81,12 @@ public class TeamManager {
 	}
 	
 	public static Team getTeam(String teamName) {
-		for(Team t : teams)
-			if(t.getName().equalsIgnoreCase(teamName))
-				return t;
-		return null;
-	}
-	
-	public static void removeEmptyTeams() {
-		ArrayList<String> keepTeams = new ArrayList<String>();
-		ArrayList<String> removeTeams = new ArrayList<String>();
-		
 		for(Team t : teams) {
-			keepTeams.add(t.getName());
-		}
-		
-		for(org.bukkit.scoreboard.Team t : board.getTeams()) {
-			if(!keepTeams.contains(t.getName())) {
-				removeTeams.add(t.getName());
+			if(t.getName().equalsIgnoreCase(teamName)) {
+				return t;
 			}
 		}
-		
-		for(String e : removeTeams) {
-			board.getTeam(e).unregister();
-		}
-		
+		return null;
 	}
-	
 	//End Methods
 }

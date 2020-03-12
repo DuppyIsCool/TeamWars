@@ -1,4 +1,4 @@
-package me.Duppy.TemplarWar.Commands.user;
+package me.Duppy.TemplarWar.Commands.Teams.user;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,7 +11,7 @@ import net.md_5.bungee.api.ChatColor;
 public class TeamsJoin implements CMD{
 
 	@Override
-	public void Execute(CommandSender sender, String[] args) {
+	public void execute(CommandSender sender, String[] args) {
 		Player p = (Player) sender;
 		Team t = TeamManager.getTeam(args[1]);
 		t.addPlayer(p);
@@ -27,10 +27,34 @@ public class TeamsJoin implements CMD{
 					if(TeamManager.teamExists(args[1])) {
 						return true;
 					}
+					else {
+						sender.sendMessage(ChatColor.RED + "Error: "+args[1] + " does not exist");
+						return false;
+					}
 				}
+				else {
+					sender.sendMessage(ChatColor.RED + "Error: You are already in a team");
+					return false;
+				}
+			}
+			else {
+				sender.sendMessage(ChatColor.RED + "Error: You do not have permission to execute this command");
+				return false;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUsage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

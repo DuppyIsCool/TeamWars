@@ -1,6 +1,7 @@
 package me.Duppy.TemplarWar.Main;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,13 +17,15 @@ public class ConfigManager {
 	private static File teamfile;
 	private static FileConfiguration playerscfg;
 	private static File playersfile;
-	
+	private static FileConfiguration guildcfg;
+	private static File guildfile;
 	
 	public void setup() {
 		if (!plugin.getDataFolder().exists()) {
 			plugin.getDataFolder().mkdir();
 		}
-
+		
+		guildfile = new File(plugin.getDataFolder(), "guilds.yml");
 		teamfile = new File(plugin.getDataFolder(), "teams.yml");
 		playersfile = new File(plugin.getDataFolder(), "players.yml");
 		
@@ -38,16 +41,27 @@ public class ConfigManager {
 
 		}
 		
+		if (!guildfile.exists()) {
+			plugin.saveResource("guilds.yml", false);
+			sender.sendMessage(ChatColor.GREEN + "guilds.yml has been created");
+
+		}
+		
+		guildcfg = YamlConfiguration.loadConfiguration(guildfile);
 		teamcfg = YamlConfiguration.loadConfiguration(teamfile);
 		playerscfg = YamlConfiguration.loadConfiguration(playersfile);
 		
 		}
+	
+	public FileConfiguration getGuilds() {
+		return guildcfg;
+	}
 
 	public FileConfiguration getTeams() {
 		return teamcfg;
 	}
 	
-	public FileConfiguration getPlayers() {
+	public static FileConfiguration getPlayers() {
 		return playerscfg;
 	}
 	
@@ -71,6 +85,16 @@ public class ConfigManager {
 			sender.sendMessage(ChatColor.RED + "Could not save the players.yml file");
 		}
 	}
+	
+	public void saveGuilds() {
+		try {
+			guildcfg.save(guildfile);
+			sender.sendMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "guilds.yml has been saved");
+
+		} catch (IOException e) {
+			sender.sendMessage(ChatColor.RED + "Could not save the guilds.yml file");
+		}
+	}
 
 	public void reloadTeams() {
 		teamcfg = YamlConfiguration.loadConfiguration(teamfile);
@@ -78,9 +102,26 @@ public class ConfigManager {
 
 	}
 	
+	public void reloadGuilds() {
+		guildcfg = YamlConfiguration.loadConfiguration(guildfile);
+		sender.sendMessage(ChatColor.BLUE + "guilds.yml has been reload");
+
+	}
+	
 	public void reloadPlayers() {
 			playerscfg = YamlConfiguration.loadConfiguration(playersfile);
 			sender.sendMessage(ChatColor.BLUE + "players.yml has been reload");
+	}
+	
+	//Getting Methods
+	public static String getPlayername(UUID uuid) {
+		for(String playerUUID : getPlayers().getKeys(false)) {
+			if(playerUUID.equals(uuid.toString())) {
+				return getPlayers().getString(playerUUID);
+			}
+		}
+		
+		return null;
 	}
 	
 }
