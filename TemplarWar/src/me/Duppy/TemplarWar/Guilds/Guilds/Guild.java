@@ -126,7 +126,7 @@ public class Guild {
 	}
 	
 	//Removes a member from the guild given their UUID
-	public void removeUser(UUID uuid) {
+	public void removeMember(UUID uuid) {
 		if(this.guildMap.containsKey(uuid)) {
 			switch(guildMap.get(uuid)) {
 				case "LEADER":
@@ -188,7 +188,6 @@ public class Guild {
 		}
 	}
 	
-	
 	private <K, V> K getKey(Map<K, V> map, V value) {
 	    for (Entry<K, V> entry : map.entrySet()) {
 	        if (entry.getValue().equals(value)) {
@@ -197,4 +196,5 @@ public class Guild {
 	    }
 	    return null;
 	}
+	
 }

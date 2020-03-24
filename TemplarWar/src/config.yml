@@ -3,6 +3,23 @@ messages:
         nocommand: "&4That is not a valid command"
         invalidargs: "&4Invalid Arguments"
         cannotexecute: "&4You cannot execute that command"
+        invalidplayer: "&4That player does not exist"
+        nopermission: "&4You do not have permission to execute that command"
     guild:
         guildcreated: "&aGuild creation successful"
         guilddeleted: "&aGuild deletion successful"
+        invitesent: "&aInvite sent"
+        
+        error:
+            noinvite: "&4You do not have an invite for that guild"
+            hasinvite: "&4You've already sent an invite to that player"
+            inguild: "&4You are already in a guild"
+            notinguild: "&4You have to be in a guild to use this command"
+            invalidguild: "&4That is no longer a valid guild"
+            lowrole: "&4Your role is not high enough to use this command"
+    team:
+        error:
+            invalidname: "&4That is an invalid team name"
+            inteam: "&4You are already in a team"
+            notinteam: "&4You must be in a team to use this command"
+            invalidteam: "&4That team does not exist"
