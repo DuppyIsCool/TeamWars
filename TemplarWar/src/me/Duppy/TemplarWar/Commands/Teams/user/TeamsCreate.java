@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Duppy.TemplarWar.Commands.CMD;
+import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
@@ -29,17 +30,17 @@ public class TeamsCreate implements CMD{
 					if(args[1].length() <= 12 && check(args[1]))
 						return true;
 					else {
-						sender.sendMessage(ChatColor.RED + "Error: Team names must be less than 12 characters");
+						MessageManager.sendMessage(p, "team.error.invalidname");
 						return false;
 					}
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "Error: You are already in a team");
+					MessageManager.sendMessage(p, "team.error.inteam");
 					return false;
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "Error: You do not have permission to execute this command");
+				MessageManager.sendMessage(p, "error.nopermission");
 				return false;
 			}
 		}

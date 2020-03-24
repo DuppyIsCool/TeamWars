@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Duppy.TemplarWar.Commands.CMD;
+import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
@@ -27,12 +28,12 @@ public class TeamsLeave implements CMD {
 						return true;
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "Error: You are not in a team");
+					MessageManager.sendMessage(p, "team.error.notinteam");
 					return false;
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "Error: You do not have permission to execute this command");
+				MessageManager.sendMessage(p, "error.nopermission");
 				return false;
 			}
 		}

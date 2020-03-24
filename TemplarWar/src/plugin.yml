@@ -2,8 +2,7 @@ name: TemplarWar
 main: me.Duppy.TemplarWar.Main.Main
 author: DuppyIsCool
 version: 1.0
-description: Faction v Faction plugin
-depend: [ProtocolLib] 
+description: PLUUUUUUUUUGIN
 commands:
     teams:
         description: Base command used for all team related commands.

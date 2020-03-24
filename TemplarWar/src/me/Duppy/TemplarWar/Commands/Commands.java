@@ -6,6 +6,9 @@ import org.bukkit.command.CommandSender;
 
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildCreate;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildDelete;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildInvite;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildJoin;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildLeave;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsCreate;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsDelete;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsJoin;
@@ -22,6 +25,9 @@ public class Commands implements CommandExecutor {
 	//GUILDS
 	private GuildCreate gcreate = new GuildCreate();
 	private GuildDelete gdelete = new GuildDelete();
+	private GuildInvite ginvite = new GuildInvite();
+	private GuildJoin gjoin = new GuildJoin();
+	private GuildLeave gleave = new GuildLeave();
 	
 	@Override
 	public boolean onCommand(CommandSender sender,  Command cmd,  String label, String[] args) {
@@ -101,7 +107,12 @@ public class Commands implements CommandExecutor {
 		
 		//Guilds Commands
 		if(cmd.getName().equalsIgnoreCase("guilds")) {
-			sender.sendMessage("hi");
+			
+			if(args.length == 0) {
+				sender.sendMessage(ChatColor.RED + "Invalid arguments");
+				return true;
+			}
+			
 			if(args[0].equalsIgnoreCase("create")) {
 				if(args.length == 2)
 					if(gcreate.canExecute(sender, args))
@@ -119,6 +130,33 @@ public class Commands implements CommandExecutor {
 						sender.sendMessage("You cannot delete a guild!");
 				return true;
 			}
+			if(args[0].equalsIgnoreCase("invite")) {
+				if(args.length == 2)
+					if(ginvite.canExecute(sender, args))
+						ginvite.execute(sender, args);
+					else
+						sender.sendMessage("You cannot invite "+args[1]);
+				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("join")) {
+				if(args.length == 2)
+					if(gjoin.canExecute(sender, args))
+						gjoin.execute(sender, args);
+					else
+						sender.sendMessage("You cannot join "+args[1]);
+				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("leave")) {
+				if(args.length == 1)
+					if(gleave.canExecute(sender, args))
+						gleave.execute(sender, args);
+					else
+						sender.sendMessage("You cannot leave your guild");
+				return true;
+			}
+			
 		}
 		return true;
 	}
