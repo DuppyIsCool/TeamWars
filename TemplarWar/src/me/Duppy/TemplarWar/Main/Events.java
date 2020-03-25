@@ -1,7 +1,9 @@
 package me.Duppy.TemplarWar.Main;
 
+import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
@@ -22,5 +24,13 @@ public class Events implements Listener{
 	@EventHandler
 	public void playerScoreboardSetup(PlayerJoinEvent e) {
 		e.getPlayer().setScoreboard(GuildManager.mainScoreboard);
+	}
+	
+	@EventHandler
+	public void onFishEvent(PlayerFishEvent e) {
+		Chunk c = e.getPlayer().getLocation().getChunk();
+		if(GuildManager.getChunkOwner(c) != null) {
+			e.getPlayer().sendMessage("This chunk is claimed by "+GuildManager.getChunkOwner(c).toString());
+		}
 	}
 }

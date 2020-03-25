@@ -9,6 +9,8 @@ messages:
         guildcreated: "&aGuild creation successful"
         guilddeleted: "&aGuild deletion successful"
         invitesent: "&aInvite sent"
+        chunkclaimed: "&aYou have claimed this chunk"
+        chunkunclaimed: "&aYou have unclaimed this chunk"
         
         error:
             noinvite: "&4You do not have an invite for that guild"
@@ -23,3 +25,5 @@ messages:
             inteam: "&4You are already in a team"
             notinteam: "&4You must be in a team to use this command"
             invalidteam: "&4That team does not exist"
+defaults:
+    maxclaimcount: 10

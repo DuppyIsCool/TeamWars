@@ -4,11 +4,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildClaim;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildCreate;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildDelete;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildInvite;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildJoin;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildLeave;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildUnclaim;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsCreate;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsDelete;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsJoin;
@@ -28,6 +30,8 @@ public class Commands implements CommandExecutor {
 	private GuildInvite ginvite = new GuildInvite();
 	private GuildJoin gjoin = new GuildJoin();
 	private GuildLeave gleave = new GuildLeave();
+	private GuildClaim gclaim = new GuildClaim();
+	private GuildUnclaim gunclaim = new GuildUnclaim();
 	
 	@Override
 	public boolean onCommand(CommandSender sender,  Command cmd,  String label, String[] args) {
@@ -154,6 +158,24 @@ public class Commands implements CommandExecutor {
 						gleave.execute(sender, args);
 					else
 						sender.sendMessage("You cannot leave your guild");
+				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("claim")) {
+				if(args.length == 1)
+					if(gclaim.canExecute(sender, args))
+						gclaim.execute(sender, args);
+					else
+						sender.sendMessage("You cannot claim land");
+				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("unclaim")) {
+				if(args.length == 1)
+					if(gunclaim.canExecute(sender, args))
+						gunclaim.execute(sender, args);
+					else
+						sender.sendMessage("You cannot unclaim land");
 				return true;
 			}
 			
