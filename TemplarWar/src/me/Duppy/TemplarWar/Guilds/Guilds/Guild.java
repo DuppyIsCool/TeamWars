@@ -1,11 +1,13 @@
 package me.Duppy.TemplarWar.Guilds.Guilds;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 import me.Duppy.TemplarWar.Main.ConfigManager;
@@ -15,8 +17,9 @@ import me.Duppy.TemplarWar.Teams.TeamManager;
 //Guild Objects
 public class Guild {
 	private HashMap<UUID,String> guildMap = new HashMap<UUID,String>();
+	private ArrayList<Chunk> chunks = new ArrayList<Chunk>();
 	private Location home;
-	private int lives,claims;
+	private int lives;
 	private String name;
 	private boolean raidable;
 	private Team team;
@@ -54,11 +57,8 @@ public class Guild {
 		this.lives = lives;
 	}
 	
-	public int getClaims() {
-		return claims;
-	}
-	public void setClaims(int claims) {
-		this.claims = claims;
+	public int getClaimSize() {
+		return this.chunks.size();
 	}
 	
 	public String getName() {
@@ -99,15 +99,15 @@ public class Guild {
 	//Adds a member to the guild given their UUID
 	public void updateColor() {
 		switch(this.team.getColor()) {
-		case "&a":
+		case "green":
 			this.scoreBoardTeam.setPrefix(ChatColor.GREEN + "" + this.name + " ");
 			break;
 			
-		case "&b":
+		case "blue":
 			this.scoreBoardTeam.setPrefix(ChatColor.BLUE + "" + this.name + " ");
 			break;
 		
-		case "&c":
+		case "red":
 			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" + this.name + " ");
 			break;
 			
@@ -186,6 +186,23 @@ public class Guild {
 					
 			}
 		}
+	}
+	
+	public void addChunk(Chunk c) {
+		chunks.add(c);
+	}
+	
+	public void removeChunk(Chunk c) {
+		if(chunks.contains(c))
+			chunks.remove(c);
+	}
+	
+	public void clearChunks() {
+		chunks.clear();
+	}
+	
+	public ArrayList<Chunk> getChunks(){
+		return this.chunks;
 	}
 	
 	private <K, V> K getKey(Map<K, V> map, V value) {

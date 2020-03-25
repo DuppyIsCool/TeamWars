@@ -6,7 +6,9 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -24,12 +26,32 @@ public class GuildManager {
 			g.setName(guild);
 			g.setLives(cfgm.getGuilds().getInt(guild + ".lives"));
 			g.setTeam(TeamManager.getTeam(cfgm.getGuilds().getString(guild + ".team")));
+			
 			//Create Home Location
 			if(cfgm.getGuilds().getConfigurationSection(guild + ".home") != null)
 				g.setHome(new Location(Bukkit.getServer().getWorld(cfgm.getGuilds().getString(guild + ".home.world")),
 					cfgm.getGuilds().getInt(guild + ".home.x"),
 					cfgm.getGuilds().getInt(guild + ".home.y"),
 					cfgm.getGuilds().getInt(guild + ".home.z")));
+			
+			//Setup chunk claims
+			if(cfgm.getGuilds().getConfigurationSection(guild + ".claims") != null)
+				for(String s : cfgm.getGuilds().getConfigurationSection(guild + ".claims").getKeys(false)) {
+					try {
+						World w = Bukkit.getServer().getWorld(cfgm.getGuilds().getString(guild + ".claims."+s));
+						
+						//Grabs the x&z from the long
+						long l = Long.parseLong(s);			
+						int x = (int)(l >> 32);
+						int z = (int)l;
+						
+						//Create chunk object and add it to the arrayList
+						Chunk c = w.getChunkAt(x, z);
+						g.addChunk(c);
+					}
+					//This catch can occur if the world is no longer valid (ex: has been deleted).
+					catch(NullPointerException e) {}
+				}
 			
 			//Setup members
 			HashMap<UUID, String> map = new HashMap<>();
@@ -51,7 +73,6 @@ public class GuildManager {
 			
 			//Update scoreboard team color (and prefix)
 			g.updateColor();
-			
 			//Add guild to guild manager list
 			GuildManager.addGuild(g);
 			
@@ -74,6 +95,12 @@ public class GuildManager {
 				cfgm.getGuilds().set(g.toString() + ".home.y",loc.getBlockY());
 				cfgm.getGuilds().set(g.toString() + ".home.z",loc.getBlockZ());
 				cfgm.getGuilds().set(g.toString() + ".home.world",loc.getWorld().getName());
+			}
+			//Claim storage
+			for(Chunk c : g.getChunks()) {
+				//Stores claims in format World: x&z
+				//x&z are stored with bitwise manipulation
+				cfgm.getGuilds().set(g.toString() + ".claims."+Long.toString((((long)c.getX()) << 32) | (c.getZ() & 0xffffffffL)), c.getWorld().getName());
 			}
 		}
 	}
@@ -110,6 +137,15 @@ public class GuildManager {
 			mainScoreboard.getTeam(guild.getName()).unregister();
 			guildList.remove(guild);
 		}
+	}
+	
+	//Retrive chunk owner
+	public static Guild getChunkOwner(Chunk c) {
+		for(Guild g : guildList) {
+			if(g.getChunks().contains(c))
+				return g;
+		}
+		return null;
 	}
 	
 }

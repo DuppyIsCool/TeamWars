@@ -57,6 +57,27 @@ public class Team {
 	public void setGuilds(ArrayList<Guild> guilds) {
 		this.guilds = guilds;
 	}
+	
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		switch(color.toLowerCase()) {
+			case "red":
+				this.color = "red";
+				break;
+			case "blue":
+				this.color = "blue";
+				break;
+			case "green":
+				this.color = "green";
+				break;
+			default:
+				this.color = "red";
+				break;
+		}
+	}
 	//End Getter and Setters
 	
 	
@@ -84,27 +105,7 @@ public class Team {
 	public void resetPoints(int points) {
 		this.points = 0;
 	}
+
 	//End methods
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		switch(color.toLowerCase()) {
-			case "red":
-				this.color = "&c";
-				break;
-			case "blue":
-				this.color = "&b";
-				break;
-			case "green":
-				this.color = "&a";
-				break;
-			default:
-				this.color = "&c";
-				break;
-		}
-	}
 
 }
