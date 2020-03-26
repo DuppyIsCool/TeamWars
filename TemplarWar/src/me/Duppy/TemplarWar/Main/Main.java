@@ -1,15 +1,20 @@
 package me.Duppy.TemplarWar.Main;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Duppy.TemplarWar.Commands.Commands;
+import me.Duppy.TemplarWar.Econ.VaultAPI;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class Main extends JavaPlugin{
 	private ConfigManager cfgm;
+	private static VaultAPI vault;
+	
 	public void onEnable() {
 		Plugin.plugin = this;
+		vault = new VaultAPI(this);
 		//Register Events
 		getServer().getPluginManager().registerEvents(new Events(), this);
 		
@@ -54,5 +59,8 @@ public class Main extends JavaPlugin{
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
-
+	
+	public static VaultAPI getVault() { 
+		return vault; 
+	}	
 }

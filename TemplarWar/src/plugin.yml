@@ -1,8 +1,9 @@
-name: TemplarWar
+name: TeamWar
 main: me.Duppy.TemplarWar.Main.Main
 author: DuppyIsCool
 version: 1.0
-description: PLUUUUUUUUUGIN
+description: Teams and guilds plugin
+depend: [Vault]
 commands:
     teams:
         description: Base command used for all team related commands.

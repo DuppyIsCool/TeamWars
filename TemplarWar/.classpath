@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/KL/Desktop/Spigot Jars/spigot-1.15.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/KL/Desktop/Spigot Jars/ProtocolLib.jar"/>
+	<classpathentry kind="lib" path="C:/Users/KL/Desktop/Spigot Jars/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
