@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import me.Duppy.TemplarWar.Commands.CMD;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
+import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 
 public class GuildLeave implements CMD {
 
@@ -25,8 +26,11 @@ public class GuildLeave implements CMD {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId())!= null) {
-				return true;
+				if(!GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER"))
+					return true;
+				else {MessageManager.sendMessage(p, "guild.error.leaderleave"); return false;}
 			}
+			else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}
 		}
 		return false;
 	}

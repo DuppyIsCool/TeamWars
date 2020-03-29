@@ -29,10 +29,11 @@ public class GuildUnclaim implements CMD{
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId())!= null) {
 				Guild g = GuildManager.getGuildFromPlayerUUID(p.getUniqueId());
 				if(g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER") || g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("ADMIN")) {
-					if(GuildManager.getChunkOwner(p.getWorld().getChunkAt(p.getLocation())).getName().equalsIgnoreCase(g.getName()))
+					if(GuildManager.getChunkOwner(p.getWorld().getChunkAt(p.getLocation())) != null && GuildManager.getChunkOwner(p.getWorld().getChunkAt(p.getLocation())).getName().equalsIgnoreCase(g.getName())) {
 						return true;
-				}
-			}
+					}else {MessageManager.sendMessage(p, "guild.error.notownchunk"); return false;}
+				}else {MessageManager.sendMessage(p, "guild.error.lowrole"); return false;}
+			}else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}
 		}
 		return false;
 	}

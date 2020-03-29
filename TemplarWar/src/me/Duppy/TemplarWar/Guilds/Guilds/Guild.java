@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -30,6 +31,7 @@ public class Guild {
 		guildMap.put(leaderUUID, "LEADER");
 		this.name = guildName;
 		this.team = TeamManager.getTeam(leaderUUID);
+		
 		//Setup the scoreboard team
 		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(guildName);
 		updateColor();
@@ -130,7 +132,8 @@ public class Guild {
 		if(this.guildMap.containsKey(uuid)) {
 			switch(guildMap.get(uuid)) {
 				case "LEADER":
-					System.out.println("ERROR: Cannot remove leaders");
+					Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + 
+							"ERROR:Check to prevent leader removal from guild failed.");
 					break;
 					
 				case "ADMIN":

@@ -23,10 +23,13 @@ public class GuildCreate implements CMD{
 	public boolean canExecute(CommandSender sender, String[] args) {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
-			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) == null)
-				if(TeamManager.getTeam(p.getUniqueId())!= null)
-					if(check(args[1]) && args[1].length() <= 12)
+			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) == null) {
+				if(TeamManager.getTeam(p.getUniqueId())!= null) {
+					if(check(args[1]) && args[1].length() <= 12) {
 						return true;
+					}else {MessageManager.sendMessage(p, "guild.error.invalidname"); return false;}
+				}else {MessageManager.sendMessage(p, "team.error.notinteam"); return false;}
+			}else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}
 		}
 		return false;
 	}

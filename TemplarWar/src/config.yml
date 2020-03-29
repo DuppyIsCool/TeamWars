@@ -14,11 +14,15 @@ messages:
         
         error:
             noinvite: "&4You do not have an invite for that guild"
+            invalidname: "&4Guild names must be less than 12 characters and alphanumeric"
             hasinvite: "&4You've already sent an invite to that player"
             inguild: "&4You are already in a guild"
             notinguild: "&4You have to be in a guild to use this command"
             invalidguild: "&4That is no longer a valid guild"
             lowrole: "&4Your role is not high enough to use this command"
+            maxclaims: "&4You have reached your guilds max amount of claims!"
+            leaderleave: "&4You must promote an admin to leader before leaving!"
+            notownchunk: "&4You do not own this chunk!"
     team:
         error:
             invalidname: "&4That is an invalid team name"

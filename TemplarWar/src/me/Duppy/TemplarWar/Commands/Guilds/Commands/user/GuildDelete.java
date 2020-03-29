@@ -20,9 +20,12 @@ public class GuildDelete implements CMD{
 	public boolean canExecute(CommandSender sender, String[] args) {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
-			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) 
-				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER"))
+			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
+				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(
+				p.getUniqueId()).equalsIgnoreCase("LEADER")) {
 					return true;
+				}else {MessageManager.sendMessage(p, "guild.error.lowrole"); return false;}
+			}else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}
 		}
 		return false;
 	}
