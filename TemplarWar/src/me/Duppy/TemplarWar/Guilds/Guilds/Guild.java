@@ -12,6 +12,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 import me.Duppy.TemplarWar.Main.ConfigManager;
+import me.Duppy.TemplarWar.Main.Plugin;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 
@@ -24,6 +25,7 @@ public class Guild {
 	private String name;
 	private boolean raidable;
 	private Team team;
+	private double balance;
 	private org.bukkit.scoreboard.Team scoreBoardTeam;
 	public Guild() {
 	}	
@@ -31,11 +33,13 @@ public class Guild {
 		guildMap.put(leaderUUID, "LEADER");
 		this.name = guildName;
 		this.team = TeamManager.getTeam(leaderUUID);
-		
+		this.balance = Plugin.plugin.getConfig().getDouble("defaults.guildcreateprice");
 		//Setup the scoreboard team
 		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(guildName);
 		updateColor();
 		this.scoreBoardTeam.addEntry(ConfigManager.getPlayername(leaderUUID));
+		scoreBoardTeam.setAllowFriendlyFire(Plugin.plugin.getConfig().getBoolean("defaults.allowfriendlyfire"));
+		scoreBoardTeam.setCanSeeFriendlyInvisibles(Plugin.plugin.getConfig().getBoolean("defaults.canseefriendlyinvisibles"));
 	}
 	
 	public HashMap<UUID,String> getGuildMap() {
@@ -94,6 +98,13 @@ public class Guild {
 	}
 	public void setScoreBoardTeam(org.bukkit.scoreboard.Team scoreBoardTeam) {
 		this.scoreBoardTeam = scoreBoardTeam;
+	}
+	
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
 	}
 	
 	//METHODS
@@ -216,5 +227,4 @@ public class Guild {
 	    }
 	    return null;
 	}
-	
 }

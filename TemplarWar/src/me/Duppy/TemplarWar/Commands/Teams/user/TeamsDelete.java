@@ -14,8 +14,8 @@ public class TeamsDelete implements CMD{
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		Team t = TeamManager.getTeam(args[1]);
+		sender.sendMessage(ChatColor.BLUE +"Teams> "+ChatColor.GRAY+ "You have deleted "+ChatColor.YELLOW+""+t.getName());
 		TeamManager.removeTeam(t);
-		sender.sendMessage(ChatColor.GREEN + "You have deleted "+t.getName());
 	}
 
 	@Override

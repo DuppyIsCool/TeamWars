@@ -6,13 +6,14 @@ import org.bukkit.entity.Player;
 import me.Duppy.TemplarWar.Commands.CMD;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
+import net.md_5.bungee.api.ChatColor;
 
 public class GuildDelete implements CMD{
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		Player p = (Player) sender;
-		MessageManager.sendMessage(sender, "guild.guilddeleted");	
+		p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY + "You have deleted your guild");	
 		GuildManager.removeGuild(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()));
 	}
 

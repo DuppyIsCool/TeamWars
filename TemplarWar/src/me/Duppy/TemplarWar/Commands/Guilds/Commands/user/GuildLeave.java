@@ -16,7 +16,7 @@ public class GuildLeave implements CMD {
 			Player p = (Player) sender;
 			String guild = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName();
 			GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).removeMember(p.getUniqueId());
-			p.sendMessage(ChatColor.GREEN + "You've left " +guild) ;
+			p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY + "You have left "+ChatColor.YELLOW + guild);
 		}
 		
 	}

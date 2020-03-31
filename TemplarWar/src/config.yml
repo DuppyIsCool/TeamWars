@@ -1,33 +1,37 @@
 messages:
     error:
-        nocommand: "&4That is not a valid command"
-        invalidargs: "&4Invalid Arguments"
-        cannotexecute: "&4You cannot execute that command"
-        invalidplayer: "&4That player does not exist"
-        nopermission: "&4You do not have permission to execute that command"
+        nocommand: "&9Error> &7That is not a valid command"
+        invalidargs: "&9Error> &7Invalid command arguments"
+        cannotexecute: "&9Error> &7You cannot execute that command"
+        invalidplayer: "&9Error> &7That player does not exist"
+        nopermission: "&9Error> &7You do not have permission to execute that command"
     guild:
-        guildcreated: "&aGuild creation successful"
-        guilddeleted: "&aGuild deletion successful"
-        invitesent: "&aInvite sent"
-        chunkclaimed: "&aYou have claimed this chunk"
-        chunkunclaimed: "&aYou have unclaimed this chunk"
+        chunkclaimed: "&9Guilds> &7You have claimed this chunk"
+        chunkunclaimed: "&9Guilds> &7You have unclaimed this chunk"
         
         error:
-            noinvite: "&4You do not have an invite for that guild"
-            invalidname: "&4Guild names must be less than 12 characters and alphanumeric"
-            hasinvite: "&4You've already sent an invite to that player"
-            inguild: "&4You are already in a guild"
-            notinguild: "&4You have to be in a guild to use this command"
-            invalidguild: "&4That is no longer a valid guild"
-            lowrole: "&4Your role is not high enough to use this command"
-            maxclaims: "&4You have reached your guilds max amount of claims!"
-            leaderleave: "&4You must promote an admin to leader before leaving!"
-            notownchunk: "&4You do not own this chunk!"
+            noinvite: "&9Guilds> &7You do not have an invite for that guild"
+            invalidname: "&9Guilds> &7Guild names must be alphanumeric and less than 12 characters"
+            hasinvite: "&9Guilds> &7You've already sent an invite to that player"
+            inguild: "&9Guilds> &7You are already in a guild"
+            notinguild: "&9Guilds> &7You have to be in a guild to use this command"
+            invalidguild: "&9Guilds> &7That is no longer a valid guild"
+            lowrole: "&9Guilds> &7Your role is not high enough to use this command"
+            maxclaims: "&9Guilds> &7You have reached your guilds max amount of claims"
+            leaderleave: "&9Guilds> &7You must promote an admin to leader before leaving"
+            notownchunk: "&9Guilds> &7You do not own this chunk!"
+            notenoughfunds: "&9Guilds> &7You lack the funds to create a guild"
+            inviteotherteam: "&9Guilds> &7You cannot invite a player from a different team"
+            joinotherteam: "&9Guilds> &7You cannot join a guild apart of a different team"
     team:
         error:
-            invalidname: "&4That is an invalid team name"
-            inteam: "&4You are already in a team"
-            notinteam: "&4You must be in a team to use this command"
-            invalidteam: "&4That team does not exist"
+            invalidname: "&9Teams> &7That is an invalid team name"
+            inteam: "&9Teams> &7You are already in a team"
+            notinteam: "&9Teams> &7You must be in a team to use this command"
+            invalidteam: "&9Teams> &7That team does not exist"
+            leaveinguild: "&9Teams> &7You cannot leave a team while in a guild"
 defaults:
     maxclaimcount: 10
+    guildcreateprice: 1000
+    allowfriendlyfire: false
+    canseefriendlyinvisible: true
