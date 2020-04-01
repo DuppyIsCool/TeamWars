@@ -1,5 +1,7 @@
 package me.Duppy.TemplarWar.Guilds.Guilds;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -16,6 +18,7 @@ import me.Duppy.TemplarWar.Main.ConfigManager;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 
 public class GuildManager {
+	public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	private static ArrayList<Guild> guildList = new ArrayList<Guild>();
 	private static ConfigManager cfgm = new ConfigManager();
 	public static Scoreboard mainScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -26,6 +29,8 @@ public class GuildManager {
 			g.setName(guild);
 			g.setLives(cfgm.getGuilds().getInt(guild + ".lives"));
 			g.setTeam(TeamManager.getTeam(cfgm.getGuilds().getString(guild + ".team")));
+			g.setBalance(cfgm.getGuilds().getDouble(guild + ".balance"));
+			g.setDateFounded(LocalDate.parse(cfgm.getGuilds().getString(guild + ".date"), formatter));
 			
 			//Create Home Location
 			if(cfgm.getGuilds().getConfigurationSection(guild + ".home") != null)
@@ -68,6 +73,9 @@ public class GuildManager {
 		        t.addEntry(ConfigManager.getPlayername(entry.getKey()));
 		    }
 			
+			//Setup upkeep
+			g.setUpkeep();
+			
 			//Set the scoreboard team
 			g.setScoreBoardTeam(t);
 			
@@ -89,6 +97,8 @@ public class GuildManager {
 			cfgm.getGuilds().createSection(g.toString() + ".members", g.getGuildMap());
 			cfgm.getGuilds().set(g.toString() + ".lives",g.getLives());
 			cfgm.getGuilds().set(g.toString() + ".team", g.getTeam().getName());
+			cfgm.getGuilds().set(g.toString()+".balance",g.getBalance());
+			cfgm.getGuilds().set(g.toString() + ".date", g.getDateFoundedObject().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
 			if(g.getHome() != null) {
 				Location loc = g.getHome();
 				cfgm.getGuilds().set(g.toString() + ".home.x",loc.getBlockX());

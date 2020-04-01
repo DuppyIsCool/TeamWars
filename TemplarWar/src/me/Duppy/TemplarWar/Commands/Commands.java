@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildClaim;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildCreate;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildDelete;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildInfo;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildInvite;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildJoin;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildLeave;
@@ -32,6 +33,7 @@ public class Commands implements CommandExecutor {
 	private GuildLeave gleave = new GuildLeave();
 	private GuildClaim gclaim = new GuildClaim();
 	private GuildUnclaim gunclaim = new GuildUnclaim();
+	private GuildInfo ginfo = new GuildInfo();
 	
 	@Override
 	public boolean onCommand(CommandSender sender,  Command cmd,  String label, String[] args) {
@@ -113,8 +115,12 @@ public class Commands implements CommandExecutor {
 		if(cmd.getName().equalsIgnoreCase("guilds")) {
 			
 			if(args.length == 0) {
-				MessageManager.sendMessage(sender, "error.invalidargs");
-				return true;
+				if(ginfo.canExecute(sender, args)) {
+					ginfo.execute(sender, args);
+					return true;
+				}
+				else
+					return true;
 			}
 			
 			if(args[0].equalsIgnoreCase("create")) {
@@ -180,6 +186,17 @@ public class Commands implements CommandExecutor {
 				if(args.length == 1) {
 					if(gunclaim.canExecute(sender, args))
 						gunclaim.execute(sender, args);
+				}
+				else
+					MessageManager.sendMessage(sender, "error.invalidargs");
+				
+				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("info")) {
+				if(args.length == 1) {
+					if(ginfo.canExecute(sender, args))
+						ginfo.execute(sender, args);
 				}
 				else
 					MessageManager.sendMessage(sender, "error.invalidargs");

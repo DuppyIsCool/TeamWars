@@ -32,6 +32,7 @@ messages:
             leaveinguild: "&9Teams> &7You cannot leave a team while in a guild"
 defaults:
     maxclaimcount: 10
+    maxplayersperguild: 20
     guildcreateprice: 1000
     allowfriendlyfire: false
     canseefriendlyinvisible: true

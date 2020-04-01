@@ -1,5 +1,7 @@
 package me.Duppy.TemplarWar.Main;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Duppy.TemplarWar.Commands.Commands;
@@ -36,6 +38,10 @@ public class Main extends JavaPlugin{
 		
 		//Finished
 		getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "TemplarWar enabled.");
+		
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			p.setScoreboard(GuildManager.mainScoreboard);
+		}
 	}
 	
 	public void onDisable() {
