@@ -40,39 +40,44 @@ public class GuildInvite implements CMD {
 			
 			if(Bukkit.getServer().getPlayer(args[1]) != null) {
 				Player recipient = Bukkit.getServer().getPlayer(args[1]);
-				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null && GuildManager.getGuildFromPlayerUUID(recipient.getUniqueId()) == null) {
-					
-					String role = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId());
-					String guildname = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName();
-					
-					//See if both sender and recipient are on the same team
-					boolean sameTeam = false;
-					
-					if(TeamManager.getTeam(recipient.getUniqueId()) != null) {
-						Team otherTeam = TeamManager.getTeam(recipient.getUniqueId());
-						if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getTeam().equals(otherTeam))
-							sameTeam = true;
-					}
-					
-					if(role.equalsIgnoreCase("LEADER") || role.equalsIgnoreCase("ADMIN")) {
-						if(!InviteManager.hasInvite(recipient.getUniqueId(), guildname)) {
-							if(sameTeam) {
-								return true;
+				
+				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
+					if(GuildManager.getGuildFromPlayerUUID(recipient.getUniqueId()) == null) {
+						if(!p.getUniqueId().equals(recipient.getUniqueId())) {
+							String role = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId());
+							String guildname = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName();
+							
+							//See if both sender and recipient are on the same team
+							boolean sameTeam = false;
+							
+							if(TeamManager.getTeam(recipient.getUniqueId()) != null) {
+								Team otherTeam = TeamManager.getTeam(recipient.getUniqueId());
+								if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getTeam().equals(otherTeam))
+									sameTeam = true;
 							}
-							else
-								MessageManager.sendMessage(p, "guild.error.inviteotherteam");
+							
+							if(role.equalsIgnoreCase("LEADER") || role.equalsIgnoreCase("ADMIN")) {
+								if(!InviteManager.hasInvite(recipient.getUniqueId(), guildname)) {
+									if(sameTeam) {
+										return true;
+									}
+									else{MessageManager.sendMessage(p, "guild.error.inviteotherteam"); return false;}
+								}
+								else {
+									MessageManager.sendMessage(p, "guild.error.hasinvite");return false;}
+							}
+							else {
+								MessageManager.sendMessage(p, "guild.error.lowrole");return false;}
 						}
-						else
-							MessageManager.sendMessage(p, "guild.error.hasinvite");
-					}
-					else 
-						MessageManager.sendMessage(p, "guild.error.lowrole");
+						else {MessageManager.sendMessage(p, "guild.error.inviteself"); return false;}
+						
+					}else {MessageManager.sendMessage(p, "guild.error.inviteplayeringuild"); return false;}
 				}
-				else
-					MessageManager.sendMessage(p, "guild.error.notinguild");
+				else {
+					MessageManager.sendMessage(p, "guild.error.notinguild");return false;}
 			}
-			else
-				MessageManager.sendMessage(p, "error.invalidplayer");
+			else {
+				MessageManager.sendMessage(p, "error.invalidplayer");return false;}
 		}
 		return false;
 	}

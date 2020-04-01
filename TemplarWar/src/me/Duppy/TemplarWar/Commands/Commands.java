@@ -10,12 +10,14 @@ import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildDelete;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildInfo;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildInvite;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildJoin;
+import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildKick;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildLeave;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildUnclaim;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsCreate;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsDelete;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsJoin;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsLeave;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsSetcolor;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 
 public class Commands implements CommandExecutor {
@@ -24,7 +26,7 @@ public class Commands implements CommandExecutor {
 	private TeamsLeave leave = new TeamsLeave();
 	private TeamsCreate create = new TeamsCreate();
 	private TeamsDelete delete = new TeamsDelete();
-	
+	private TeamsSetcolor setcolor = new TeamsSetcolor();
 	//GUILDS
 	private GuildCreate gcreate = new GuildCreate();
 	private GuildDelete gdelete = new GuildDelete();
@@ -34,6 +36,7 @@ public class Commands implements CommandExecutor {
 	private GuildClaim gclaim = new GuildClaim();
 	private GuildUnclaim gunclaim = new GuildUnclaim();
 	private GuildInfo ginfo = new GuildInfo();
+	private GuildKick gkick = new GuildKick();
 	
 	@Override
 	public boolean onCommand(CommandSender sender,  Command cmd,  String label, String[] args) {
@@ -95,6 +98,21 @@ public class Commands implements CommandExecutor {
 				if(args.length == 1) {
 					if(leave.canExecute(sender, args)) {
 						leave.execute(sender, args);
+						return true;
+					}
+					else
+						return true;
+				}
+				else {
+					MessageManager.sendMessage(sender, "error.invalidargs");
+					return true;
+				}
+			}
+			
+			if(args[0].equalsIgnoreCase("setcolor")) {
+				if(args.length == 2) {
+					if(setcolor.canExecute(sender, args)) {
+						setcolor.execute(sender, args);
 						return true;
 					}
 					else
@@ -202,6 +220,21 @@ public class Commands implements CommandExecutor {
 					MessageManager.sendMessage(sender, "error.invalidargs");
 				
 				return true;
+			}
+			
+			if(args[0].equalsIgnoreCase("kick")) {
+				if(args.length == 2) {
+					if(gkick.canExecute(sender, args)) {
+						gkick.execute(sender, args);
+						return true;
+					}
+					else
+						return true;
+				}
+				else {
+					MessageManager.sendMessage(sender, "error.invalidargs");
+					return true;
+				}
 			}
 			
 			MessageManager.sendMessage(sender, "error.nocommand");

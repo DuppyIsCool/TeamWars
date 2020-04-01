@@ -23,6 +23,11 @@ messages:
             notenoughfunds: "&9Guilds> &7You lack the funds to create a guild"
             inviteotherteam: "&9Guilds> &7You cannot invite a player from a different team"
             joinotherteam: "&9Guilds> &7You cannot join a guild apart of a different team"
+            kickself: "&9Guilds> &7You cannot kick yourself"
+            inviteself: "&9Guilds> &7You cannot invite yourself"
+            inviteplayeringuild: "&9Guilds> &7You cannot invite a player who is in a guild"
+            claimingclaimedchunk: "&9Guilds> &7You cannot claim land that is already claimed"
+            claimtoofast: "&9Guilds> &7You cannot claim this land because it was claimed recently"
     team:
         error:
             invalidname: "&9Teams> &7That is an invalid team name"
@@ -30,9 +35,18 @@ messages:
             notinteam: "&9Teams> &7You must be in a team to use this command"
             invalidteam: "&9Teams> &7That team does not exist"
             leaveinguild: "&9Teams> &7You cannot leave a team while in a guild"
+            invalidcolor: "&9Teams> &7That is not a valid color"
+        colorset: "&9Teams> &7Team color sucessfully set"
 defaults:
     maxclaimcount: 10
+    maxbankamount: 18000
+    raidtime: 300
+    maxlives: 10
     maxplayersperguild: 20
     guildcreateprice: 1000
     allowfriendlyfire: false
-    canseefriendlyinvisible: true
+    canseefriendlyinvisibles: true
+    backuptime: 600
+    invitetime: 300
+constants:
+    upkeeptimer: 86400

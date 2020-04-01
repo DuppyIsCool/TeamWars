@@ -1,19 +1,29 @@
 package me.Duppy.TemplarWar.Main;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.Duppy.TemplarWar.Commands.Commands;
 import me.Duppy.TemplarWar.Econ.VaultAPI;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
+import me.Duppy.TemplarWar.Tasks.Backups;
+import me.Duppy.TemplarWar.Tasks.InviteCleaner;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class Main extends JavaPlugin{
 	private ConfigManager cfgm;
 	private static VaultAPI vault;
-	
 	public void onEnable() {
 		Plugin.plugin = this;
 		vault = new VaultAPI(this);
@@ -39,9 +49,28 @@ public class Main extends JavaPlugin{
 		//Finished
 		getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "TemplarWar enabled.");
 		
+		//This will occur if the plugin was being reloaded. It fixes any scoreboard issues
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			p.setScoreboard(GuildManager.mainScoreboard);
 		}
+		
+		//Start the backup task
+		@SuppressWarnings("unused")
+		BukkitTask backupTask = new Backups(Plugin.plugin.getConfig().getInt("defaults.backuptime")+1,cfgm).runTaskTimer(Plugin.plugin, 0, 20);
+		//Start invite timer task
+		@SuppressWarnings("unused")
+		BukkitTask inviteTask = new InviteCleaner(Plugin.plugin.getConfig().getInt("defaults.invitetime")+1).runTaskTimer(Plugin.plugin, 0, 20);
+		
+		//Upkeep code
+		Timer timer = new Timer();
+        LocalDateTime tomorrowMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).plusDays(1);
+        Date date = Date.from(tomorrowMidnight.atZone(ZoneId.systemDefault()).toInstant());
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                GuildManager.applyUpkeep();
+            }
+        }, date);
 	}
 	
 	public void onDisable() {

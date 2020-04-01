@@ -10,16 +10,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
+import me.Duppy.TemplarWar.Tasks.Raid;
 
 public class Events implements Listener{
 
@@ -53,6 +58,11 @@ public class Events implements Listener{
 		Player p = e.getPlayer();
 		Chunk c = e.getBlock().getChunk();
 		
+		//Prevent players from breaking chunk border blocks
+		if(!e.getBlock().getMetadata("SPAWNED").isEmpty())
+			e.setCancelled(true);
+		
+		
 		//Checks to see if the block is claimed
 		if(GuildManager.getChunkOwner(c) != null) {
 			//If the player is not apart of the guild the chunk is claimed by, cancel event
@@ -73,7 +83,25 @@ public class Events implements Listener{
 				e.setCancelled(true);
 		}
 	}
-	
+	//Used to prevent players from opening doors/chests in a guild
+	@EventHandler
+	public void blockInterract(PlayerInteractEvent event) {
+	    if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+	    	if(GuildManager.getChunkOwner(event.getClickedBlock().getChunk())!= null) {
+	    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getLocation().getChunk()).
+	    				getGuildMap().containsKey(event.getPlayer().getUniqueId())){
+		    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).isRaidable()) {
+		    				event.setCancelled(true);
+		    		}
+		    		
+		    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
+		    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
+		    			event.setCancelled(true);
+		    		}
+	    		}
+	        }
+	    }   
+    }
 	@EventHandler
 	//Prevents creepers and tnt from exploding guild claims if the guild is not raidable
 	public void onEntityExplode(EntityExplodeEvent event) {
@@ -125,5 +153,32 @@ public class Events implements Listener{
         if(e.getRawSlot() == e.getSlot() && e.getView().getTitle().equals(ChatColor.RED + "Guild Display")){
         	e.setCancelled(true);
     	} 
+	}
+	
+	@EventHandler
+	public void onPlayerDeath(PlayerDeathEvent e) {
+		//This is used when a player dies, their guild loses one life.
+		if(e.getEntity() instanceof Player) {
+			Player p = (Player) e.getEntity();
+			
+			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId())!=null) {
+				Guild g = GuildManager.getGuildFromPlayerUUID(p.getUniqueId());
+				//If losing a life would make their lives 0
+				if((g.getLives()-1) == 0) {
+					//Set their lives to 0
+					g.setLives(0);
+					//Enable them to be raided
+					g.setRaidable(true);
+					@SuppressWarnings("unused")
+					//Create a new timer for how long the raid should be (determined in config)
+					BukkitTask task = new Raid(Plugin.plugin.getConfig().getInt("defaults.raidtime")+1,g).runTaskTimer(Plugin.plugin, 0, 20);
+				}
+				
+				//If losing a life would not be 0, just decrease the life by 1
+				else if ((g.getLives()-1) > 0)
+					g.setLives(g.getLives()-1);
+			}
+			
+		}
 	}
 }

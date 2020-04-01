@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -11,15 +12,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import me.Duppy.TemplarWar.Main.ConfigManager;
+import me.Duppy.TemplarWar.Main.Plugin;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 
 public class GuildManager {
 	public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	private static ArrayList<Guild> guildList = new ArrayList<Guild>();
+	public static HashMap<Chunk,BukkitTask> chunkmap = new HashMap<Chunk,BukkitTask>();
 	private static ConfigManager cfgm = new ConfigManager();
 	public static Scoreboard mainScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	public static void setupGuilds() {
@@ -72,6 +76,8 @@ public class GuildManager {
 			for (Entry<UUID, String> entry : map.entrySet()) {
 		        t.addEntry(ConfigManager.getPlayername(entry.getKey()));
 		    }
+			t.setAllowFriendlyFire(Plugin.plugin.getConfig().getBoolean("defaults.allowfriendlyfire"));
+			t.setCanSeeFriendlyInvisibles(Plugin.plugin.getConfig().getBoolean("defaults.canseefriendlyinvisibles"));
 			
 			//Setup upkeep
 			g.setUpkeep();
@@ -157,5 +163,21 @@ public class GuildManager {
 		}
 		return null;
 	}
+	
+	//Apply upkeep to guilds.
+	//If they don't have the upkeep, remove the guild.
+	public static void applyUpkeep() {
+		double balanceAfter = 0;
+		Iterator<Guild> itr = guildList.iterator();
+	    while (itr.hasNext()) {
+	      Guild g = itr.next();
+	      balanceAfter = g.getBalance()-g.getUpkeep();
+	      if (balanceAfter <= 0) {
+	        itr.remove();
+	      }
+	    }
+	}
+	
+	
 	
 }
