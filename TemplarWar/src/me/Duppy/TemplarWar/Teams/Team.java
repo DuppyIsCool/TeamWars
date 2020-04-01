@@ -73,6 +73,9 @@ public class Team {
 			case "green":
 				this.color = "green";
 				break;
+			case "yellow":
+				this.color = "yellow";
+				break;
 			default:
 				this.color = "red";
 				break;

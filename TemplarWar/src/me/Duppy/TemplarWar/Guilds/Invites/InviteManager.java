@@ -9,7 +9,6 @@ public class InviteManager {
 	
 	public static void addInvite(Invite i) {
 		invites.add(i);
-		cleanOldInvites();
 	}
 	
 	public static void deleteInvite(UUID uuid, String guild) {
@@ -31,6 +30,7 @@ public class InviteManager {
 	}
 	
 	//Should move this to a scheduled task?
+	//YES
 	public static void cleanOldInvites() {
 		Iterator<Invite> itr = invites.iterator();
 	    while (itr.hasNext()) {

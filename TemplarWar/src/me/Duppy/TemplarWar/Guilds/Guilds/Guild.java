@@ -36,6 +36,7 @@ public class Guild {
 		guildMap.put(leaderUUID, "LEADER");
 		this.name = guildName;
 		this.team = TeamManager.getTeam(leaderUUID);
+		this.lives = Plugin.plugin.getConfig().getInt("defaults.maxlives");
 		this.balance = Plugin.plugin.getConfig().getDouble("defaults.guildcreateprice");
 		//Setup the scoreboard team
 		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(guildName);
@@ -109,7 +110,8 @@ public class Guild {
 		return balance;
 	}
 	public void setBalance(double balance) {
-		this.balance = balance;
+		if(balance > Plugin.plugin.getConfig().getDouble("defaults.maxbankamount"))
+			this.balance = Plugin.plugin.getConfig().getDouble("defaults.maxbankamount");
 	}
 	
 	public void setDateFounded(LocalDate localDate) {
@@ -146,6 +148,9 @@ public class Guild {
 		
 		case "red":
 			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" + this.name + " ");
+			break;
+		case "yellow":
+			this.scoreBoardTeam.setPrefix(ChatColor.YELLOW + "" + this.name + " ");
 			break;
 			
 		//This should never call. Team color should also be set or default by red.
