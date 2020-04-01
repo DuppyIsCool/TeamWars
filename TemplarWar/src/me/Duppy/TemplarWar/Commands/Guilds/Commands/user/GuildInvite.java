@@ -11,6 +11,8 @@ import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Guilds.Invites.Invite;
 import me.Duppy.TemplarWar.Guilds.Invites.InviteManager;
+import me.Duppy.TemplarWar.Teams.TeamManager;
+import me.Duppy.TemplarWar.Teams.Team;
 import net.md_5.bungee.api.ChatColor;
 
 public class GuildInvite implements CMD {
@@ -23,8 +25,9 @@ public class GuildInvite implements CMD {
 			
 			Invite i = new Invite(recipient.getUniqueId(), GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName(), new Date(System.currentTimeMillis()+60*1000));
 			InviteManager.addInvite(i);
-			MessageManager.sendMessage(p, "guild.invitesent");
-			recipient.sendMessage(ChatColor.GREEN + "You recieved an invite from "+GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName());
+			p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY + "You have sent an invite to "+ChatColor.YELLOW +recipient.getName());
+			recipient.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.YELLOW + ""
+			+p.getName() + ChatColor.GRAY +" has sent you an invite to "+ChatColor.YELLOW+""+GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName());
 		}
 		
 	}
@@ -42,9 +45,22 @@ public class GuildInvite implements CMD {
 					String role = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId());
 					String guildname = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName();
 					
+					//See if both sender and recipient are on the same team
+					boolean sameTeam = false;
+					
+					if(TeamManager.getTeam(recipient.getUniqueId()) != null) {
+						Team otherTeam = TeamManager.getTeam(recipient.getUniqueId());
+						if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getTeam().equals(otherTeam))
+							sameTeam = true;
+					}
+					
 					if(role.equalsIgnoreCase("LEADER") || role.equalsIgnoreCase("ADMIN")) {
 						if(!InviteManager.hasInvite(recipient.getUniqueId(), guildname)) {
-							return true;
+							if(sameTeam) {
+								return true;
+							}
+							else
+								MessageManager.sendMessage(p, "guild.error.inviteotherteam");
 						}
 						else
 							MessageManager.sendMessage(p, "guild.error.hasinvite");

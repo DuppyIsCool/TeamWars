@@ -18,7 +18,7 @@ public class TeamsCreate implements CMD{
 		t.setPoints(0);
 		t.addPlayer(p);
 		TeamManager.addTeam(t);
-		sender.sendMessage(ChatColor.GREEN + "You have created "+t.getName());
+		sender.sendMessage(ChatColor.BLUE +"Teams> "+ChatColor.GRAY+ "You have created "+ChatColor.YELLOW+""+t.getName());
 	}
 
 	@Override

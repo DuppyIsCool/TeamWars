@@ -16,7 +16,7 @@ public class VaultAPI {
 
     public VaultAPI(Main plugin) {
         this.plugin = plugin;
-        if (!setupPermissions() && !setupChat() && !setupEconomy()) {
+        if (!setupPermissions() || !setupChat() || !setupEconomy()) {
             plugin.getPluginLoader().disablePlugin(plugin);
             plugin.getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", plugin.getDescription().getName()));
         }

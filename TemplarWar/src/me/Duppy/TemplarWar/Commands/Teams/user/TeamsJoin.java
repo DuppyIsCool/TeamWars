@@ -16,7 +16,7 @@ public class TeamsJoin implements CMD{
 		Player p = (Player) sender;
 		Team t = TeamManager.getTeam(args[1]);
 		t.addPlayer(p);
-		sender.sendMessage(ChatColor.GREEN + "You have joined "+t.getName());
+		sender.sendMessage(ChatColor.BLUE +"Teams> "+ChatColor.GRAY+ "You have joined "+ChatColor.YELLOW+""+t.getName());
 	}
 
 	@Override

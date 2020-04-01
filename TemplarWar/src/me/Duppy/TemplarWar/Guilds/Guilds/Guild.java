@@ -1,16 +1,20 @@
 package me.Duppy.TemplarWar.Guilds.Guilds;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 import me.Duppy.TemplarWar.Main.ConfigManager;
+import me.Duppy.TemplarWar.Main.Plugin;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 
@@ -23,6 +27,8 @@ public class Guild {
 	private String name;
 	private boolean raidable;
 	private Team team;
+	private double balance,upkeep;
+	private LocalDate dateFounded;
 	private org.bukkit.scoreboard.Team scoreBoardTeam;
 	public Guild() {
 	}	
@@ -30,10 +36,15 @@ public class Guild {
 		guildMap.put(leaderUUID, "LEADER");
 		this.name = guildName;
 		this.team = TeamManager.getTeam(leaderUUID);
+		this.balance = Plugin.plugin.getConfig().getDouble("defaults.guildcreateprice");
 		//Setup the scoreboard team
 		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(guildName);
 		updateColor();
 		this.scoreBoardTeam.addEntry(ConfigManager.getPlayername(leaderUUID));
+		scoreBoardTeam.setAllowFriendlyFire(Plugin.plugin.getConfig().getBoolean("defaults.allowfriendlyfire"));
+		scoreBoardTeam.setCanSeeFriendlyInvisibles(Plugin.plugin.getConfig().getBoolean("defaults.canseefriendlyinvisibles"));
+		dateFounded = LocalDate.now();
+		this.upkeep = (guildMap.size() * 20) + (chunks.size() * 40) + 100;
 	}
 	
 	public HashMap<UUID,String> getGuildMap() {
@@ -94,6 +105,32 @@ public class Guild {
 		this.scoreBoardTeam = scoreBoardTeam;
 	}
 	
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	
+	public void setDateFounded(LocalDate localDate) {
+		this.dateFounded = localDate;
+	}
+	
+	public String getDateFoundedString() {
+		return this.dateFounded.format(DateTimeFormatter.ofPattern("MM/dd/yyy"));
+	}
+	
+	public LocalDate getDateFoundedObject() {
+		return this.dateFounded;
+	}
+	
+	public double getUpkeep() {
+		return upkeep;
+	}
+	public void setUpkeep() {
+		this.upkeep = (guildMap.size() * 20) + (chunks.size() * 40) + 100;
+	}
+	
 	//METHODS
 	
 	//Adds a member to the guild given their UUID
@@ -118,6 +155,10 @@ public class Guild {
 		}
 	}
 	
+	public UUID getLeader() {
+		return getKey(guildMap,"LEADER");
+	}
+	
 	public void addMember(UUID uuid) {
 		if(!(this.guildMap.containsKey(uuid))) {
 			this.scoreBoardTeam.addEntry(ConfigManager.getPlayers().getString(uuid.toString()));
@@ -130,7 +171,8 @@ public class Guild {
 		if(this.guildMap.containsKey(uuid)) {
 			switch(guildMap.get(uuid)) {
 				case "LEADER":
-					System.out.println("ERROR: Cannot remove leaders");
+					Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + 
+							"ERROR:Check to prevent leader removal from guild failed.");
 					break;
 					
 				case "ADMIN":
@@ -213,5 +255,4 @@ public class Guild {
 	    }
 	    return null;
 	}
-	
 }

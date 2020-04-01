@@ -7,6 +7,7 @@ import me.Duppy.TemplarWar.Commands.CMD;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Guilds.Invites.InviteManager;
+import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class GuildJoin implements CMD{
@@ -16,9 +17,17 @@ public class GuildJoin implements CMD{
 		if(canExecute(sender, args)) {
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromGuildName(args[1]) != null) {
-				GuildManager.getGuildFromGuildName(args[1]).addMember(p.getUniqueId());
-				InviteManager.deleteInvite(p.getUniqueId(), args[1]);
-				p.sendMessage(ChatColor.GREEN + "You've joined "+ args[1]);
+				if(TeamManager.getTeam(p.getUniqueId()) != null) {
+					if(TeamManager.getTeam(p.getUniqueId()).getName().equalsIgnoreCase(GuildManager.getGuildFromGuildName(args[1]).getTeam().getName())) {
+						GuildManager.getGuildFromGuildName(args[1]).addMember(p.getUniqueId());
+						InviteManager.deleteInvite(p.getUniqueId(), args[1]);
+						p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY + 
+								"You have joined "+ChatColor.YELLOW+""+GuildManager.getGuildFromGuildName(args[1]));	
+					}
+					else
+						MessageManager.sendMessage(p, "guild.error.joinotherteam");
+				}else
+					MessageManager.sendMessage(p, "team.error.notinteam");
 			}
 			else
 				MessageManager.sendMessage(p, "guild.error.invalidguild");

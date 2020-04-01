@@ -29,12 +29,17 @@ public class GuildClaim implements CMD{
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId())!= null) {
 				Guild g = GuildManager.getGuildFromPlayerUUID(p.getUniqueId());
-				if(g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER") || g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("ADMIN")) {
-					if(g.getClaimSize() < Plugin.plugin.getConfig().getInt("defaults.maxclaimcount"))
+				if(g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER") 
+						|| g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("ADMIN")){
+					if(g.getClaimSize() < Plugin.plugin.getConfig().getInt("defaults.maxclaimcount")) {
 						return true;
+					}
+					else {
+						MessageManager.sendMessage(p, "guild.error.maxclaims"); return false;}
 				}
+				else {MessageManager.sendMessage(p, "guild.error.lowrole"); return false;}
 			}
-					
+			else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}		
 		}
 		return false;
 	}
