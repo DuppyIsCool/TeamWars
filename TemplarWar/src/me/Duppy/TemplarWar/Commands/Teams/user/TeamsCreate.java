@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Duppy.TemplarWar.Commands.CMD;
+import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
@@ -28,7 +29,13 @@ public class TeamsCreate implements CMD{
 			if(p.hasPermission("teams.create")) {
 				if(TeamManager.getTeam(p.getUniqueId()) == null) {
 					if(args[1].length() <= 12 && check(args[1]))
-						return true;
+						if(!GuildManager.isTeamName(args[1])) {
+							return true;
+						}
+						else {
+							MessageManager.sendMessage(p, "team.error.nameinuse");
+							return false;
+						}
 					else {
 						MessageManager.sendMessage(p, "team.error.invalidname");
 						return false;

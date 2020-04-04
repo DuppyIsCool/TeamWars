@@ -1,5 +1,7 @@
 package me.Duppy.TemplarWar.Commands.Guilds.Commands.user;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
@@ -72,8 +74,15 @@ public class GuildInfo implements CMD {
 			
 			//Setting lore
 			goldlores.add(ChatColor.GREEN + "Balance: "+ChatColor.YELLOW + g.getBalance());
+			double hoursLeft = (g.getBalance()/(g.getUpkeep()/24));
+			double minutesLeft = (g.getBalance()/(g.getUpkeep()/1440));
+			minutesLeft = round(minutesLeft,2);
+			hoursLeft = round(hoursLeft,2);
+			if(hoursLeft > 1)
+				goldlores.add(ChatColor.GREEN + "Hours Left: "+ChatColor.YELLOW+hoursLeft);
+			else
+				goldlores.add(ChatColor.GREEN + "Minutes Left: "+ChatColor.YELLOW+minutesLeft);
 			goldlores.add(ChatColor.GREEN + "Upkeep: "+ChatColor.RED+ g.getUpkeep());
-
 			
 			//Setting lore to item
 			goldmetas.setLore(goldlores);
@@ -158,6 +167,14 @@ public class GuildInfo implements CMD {
 	public String getUsage() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = BigDecimal.valueOf(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 
 }

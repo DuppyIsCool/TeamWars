@@ -7,27 +7,34 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Tasks.Raid;
+import me.Duppy.TemplarWar.Teams.TeamManager;
 
 public class Events implements Listener{
 	@EventHandler
@@ -65,6 +72,103 @@ public class Events implements Listener{
 			if(!GuildManager.getChunkOwner(c).getGuildMap().containsKey(p.getUniqueId()) && !p.hasPermission("guilds.bypass"))
 				e.setCancelled(true);
 		}
+	}
+	
+	//Prevent Player damage
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) { // Triggered whenever an entity damages another entity
+	    if(!(e.getEntity() instanceof Player)) {
+	        // Victim is not a player
+	        return;
+	    }
+	 
+	    // Cast victim
+	    Player victim = (Player) e.getEntity();
+	 
+	    // Create an empty player object to store attacker
+	    Player attacker = null;
+	 
+	    if(e.getDamager() instanceof Player) {
+	        // Attacker is a player (melee damage)
+	        attacker = (Player) e.getDamager();
+	    } else if(e.getDamager() instanceof Arrow) {
+	        // Attacker is an arrow (projectile damage)
+	        Arrow arrow = (Arrow) e.getDamager();
+	        if(!(arrow.getShooter() instanceof Player)) {
+	            // Arrow was not fired by a player
+	            return;
+	        }
+	        // Cast attacker
+	        attacker = (Player) arrow.getShooter();
+	    } else if(e.getDamager() instanceof ThrownPotion) {
+	        /* Splash potion of harming triggers this event because it deals direct damage,
+	        but we will deal with that kind of stuff in PotionSplashEvent instead */
+	        return;
+	    }
+	 
+	    // It's possible to shoot yourself
+	    if(victim == attacker) {
+	        return;
+	    }
+	    // Just a quick null check for the attacker, in case I missed something
+	    if(attacker == null) {
+	        return;
+	    }
+	 
+	    // Check the teams
+	    if(TeamManager.getTeam(attacker.getUniqueId())!= null) {
+	    	if(TeamManager.getTeam(victim.getUniqueId()) != null)
+	    		if(TeamManager.getTeam(attacker.getUniqueId()).getName().equalsIgnoreCase(
+	    				TeamManager.getTeam(victim.getUniqueId()).getName()))
+	        e.setCancelled(true);
+	    }
+	}
+	
+	//Prevent Team potion Damage
+	@EventHandler
+	public void onPotionSplash(PotionSplashEvent e) {
+	    // Is this a dangerous potion? (Probably not the most efficient way to check this. Tips?)
+	    boolean cancel = true;
+	    for(PotionEffect effect : e.getEntity().getEffects()) {
+	        if(effect.getType().getName().equalsIgnoreCase("harm") || // Splash potion of harming
+	        effect.getType().getName().equalsIgnoreCase("poison")) { // Splash potion of poison
+	            cancel = false;
+	        }
+	    }
+	    if(cancel) return;
+	 
+	    // Figure out who threw it
+	    if(!(e.getPotion().getShooter() instanceof Player)) {
+	        // The potion was not thrown by a player. Probably just some crazy witch again.
+	        return;
+	    }
+	 
+	    // Cast attacker
+	    Player attacker = (Player) e.getPotion().getShooter();
+	 
+	    // Check each entity that was hit by this potion
+	    Player victim = null;
+	    for(LivingEntity entity : e.getAffectedEntities()) {
+	        if(entity instanceof Player) {
+	            // This victim is a player, cast him/her
+	            victim = (Player) entity;
+	 
+	            // You can easily hit yourself with a splash potion.
+	            if(victim == attacker) {
+	                // Yeah, this is the same player. Let him burn! Next!
+	                continue;
+	            }
+	 
+	            // Check teams
+	            if(TeamManager.getTeam(attacker.getUniqueId())!= null) {
+	    	    	if(TeamManager.getTeam(victim.getUniqueId()) != null)
+	    	    		if(TeamManager.getTeam(attacker.getUniqueId()).getName().equalsIgnoreCase(
+	    	    				TeamManager.getTeam(victim.getUniqueId()).getName()))
+	    	    			// Reduce the effect of this potion to zero (victim only)
+	    					e.setIntensity(victim, 0);
+	            }
+	        }
+	    }
 	}
 	
 	@EventHandler

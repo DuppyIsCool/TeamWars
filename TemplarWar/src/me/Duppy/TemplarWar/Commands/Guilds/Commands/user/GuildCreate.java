@@ -34,7 +34,9 @@ public class GuildCreate implements CMD{
 				if(TeamManager.getTeam(p.getUniqueId())!= null) {
 					if(check(args[1]) && args[1].length() <= 12) {
 						if(Main.getVault().getEconomy().getBalance(p) >= Plugin.plugin.getConfig().getDouble("defaults.guildcreateprice")) {
-							return true;
+							if(!GuildManager.isTeamName(args[1])) {
+								return true;
+							}else {MessageManager.sendMessage(p, "guild.error.takingteamname"); return false;}
 						}else {MessageManager.sendMessage(p, "guild.error.notenoughfunds"); return false;}
 					}else {MessageManager.sendMessage(p, "guild.error.invalidname"); return false;}
 				}else {MessageManager.sendMessage(p, "team.error.notinteam"); return false;}

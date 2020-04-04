@@ -3,24 +3,35 @@ package me.Duppy.TemplarWar.Teams;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
+import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
+import me.Duppy.TemplarWar.Main.ConfigManager;
 
 public class Team {
 	private int points;
 	private ArrayList<UUID> players;
 	private String name,color;
 	private ArrayList<Guild> guilds;
-	//Empty Constructor
-	public Team() {
+	private org.bukkit.scoreboard.Team scoreBoardTeam;
+	
+	//Constructor used during setup
+	public Team(String name) {
 		players = new ArrayList<UUID>();
+		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(name);
+		this.name = name;
 	}
 	
+	//Constructor used by players
 	public Team(String name,UUID creator) {
+		this.scoreBoardTeam = GuildManager.mainScoreboard.registerNewTeam(name);
+		setColor("red");
+		updateColor();
 		this.players = new ArrayList<UUID>();
 		this.players.add(creator);
-		setColor("red");
+		this.scoreBoardTeam.addEntry(ConfigManager.getPlayername(creator));
 		this.name = name;
 		this.guilds = new ArrayList<Guild>();
 	}
@@ -81,6 +92,11 @@ public class Team {
 				this.color = "red";
 				break;
 		}
+		updateColor();
+	}
+	
+	public org.bukkit.scoreboard.Team getScoreBoardTeam() {
+		return this.scoreBoardTeam;
 	}
 	//End Getter and Setters
 	
@@ -89,12 +105,14 @@ public class Team {
 	public void addPlayer(Player p) {
 		if(!this.players.contains(p.getUniqueId())) {
 			this.players.add(p.getUniqueId());
+			this.scoreBoardTeam.addEntry(p.getName());
 		}
 	}
 	
 	public void removePlayer(Player p){
 		if(this.players.contains(p.getUniqueId())) {
 			this.players.remove(p.getUniqueId());
+			this.scoreBoardTeam.removeEntry(p.getName());
 		}
 	}
 	
@@ -119,6 +137,31 @@ public class Team {
 		if(guilds.contains(g))
 			guilds.remove(g);
 	}
+	
+	public void updateColor() {
+		switch(this.color) {
+		case "green":
+			this.scoreBoardTeam.setColor(ChatColor.GREEN);
+			break;
+			
+		case "blue":
+			this.scoreBoardTeam.setColor(ChatColor.BLUE);
+			break;
+		
+		case "red":
+			this.scoreBoardTeam.setColor(ChatColor.RED);
+			break;
+		case "yellow":
+			this.scoreBoardTeam.setColor(ChatColor.YELLOW);
+			break;
+			
+		//This should never call. Team color should also be set or default by red.
+		default:
+			this.scoreBoardTeam.setColor(ChatColor.RED);
+			break;
+		}
+	}
+	
 
 	//End methods
 

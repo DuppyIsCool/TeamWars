@@ -1,5 +1,7 @@
 package me.Duppy.TemplarWar.Guilds.Guilds;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -106,7 +108,7 @@ public class Guild {
 	}
 	
 	public double getBalance() {
-		return balance;
+		return round(balance,2);
 	}
 	public void setBalance(double balance) {
 		if(balance > Plugin.plugin.getConfig().getDouble("defaults.maxbankamount"))
@@ -128,7 +130,8 @@ public class Guild {
 	}
 	
 	public double getUpkeep() {
-		return (guildMap.size() * 20) + (chunks.size() * 40) + 100;
+		return (guildMap.size() * Plugin.plugin.getConfig().getDouble("defaults.upkeepcostpermember")) 
+				+ (chunks.size() * Plugin.plugin.getConfig().getDouble("defaults.upkeepcostperclaim")) + 100;
 	}
 	//METHODS
 	
@@ -136,23 +139,28 @@ public class Guild {
 	public void updateColor() {
 		switch(this.team.getColor()) {
 		case "green":
-			this.scoreBoardTeam.setPrefix(ChatColor.GREEN + "" + this.name + " ");
+			this.scoreBoardTeam.setPrefix(ChatColor.GREEN + "" +ChatColor.BOLD+  this.name + " ");
+			this.scoreBoardTeam.setColor(ChatColor.GREEN);
 			break;
 			
 		case "blue":
-			this.scoreBoardTeam.setPrefix(ChatColor.BLUE + "" + this.name + " ");
+			this.scoreBoardTeam.setPrefix(ChatColor.BLUE + "" +ChatColor.BOLD+ this.name + " ");
+			this.scoreBoardTeam.setColor(ChatColor.BLUE);
 			break;
 		
 		case "red":
-			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" + this.name + " ");
+			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" +ChatColor.BOLD+ this.name + " ");
+			this.scoreBoardTeam.setColor(ChatColor.RED);
 			break;
 		case "yellow":
-			this.scoreBoardTeam.setPrefix(ChatColor.YELLOW + "" + this.name + " ");
+			this.scoreBoardTeam.setPrefix(ChatColor.YELLOW + "" +ChatColor.BOLD+  this.name + " ");
+			this.scoreBoardTeam.setColor(ChatColor.YELLOW);
 			break;
 			
 		//This should never call. Team color should also be set or default by red.
 		default:
-			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" + this.name + " ");
+			this.scoreBoardTeam.setPrefix(ChatColor.RED + "" +ChatColor.BOLD+  this.name + " ");
+			this.scoreBoardTeam.setColor(ChatColor.RED);
 			break;
 		}
 	}
@@ -163,6 +171,7 @@ public class Guild {
 	
 	public void addMember(UUID uuid) {
 		if(!(this.guildMap.containsKey(uuid))) {
+			getTeam().getScoreBoardTeam().removeEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 			this.scoreBoardTeam.addEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 			guildMap.put(uuid, "MEMBER");
 		}
@@ -180,11 +189,13 @@ public class Guild {
 				case "ADMIN":
 					guildMap.remove(uuid);
 					this.scoreBoardTeam.removeEntry(ConfigManager.getPlayers().getString(uuid.toString()));
+					getTeam().getScoreBoardTeam().addEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 					break;
 					
 				case "MEMBER":
 					guildMap.remove(uuid);
 					this.scoreBoardTeam.removeEntry(ConfigManager.getPlayers().getString(uuid.toString()));
+					getTeam().getScoreBoardTeam().addEntry(ConfigManager.getPlayers().getString(uuid.toString()));
 					break;
 					
 			}
@@ -256,5 +267,13 @@ public class Guild {
 	        }
 	    }
 	    return null;
+	}
+	
+	private static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = BigDecimal.valueOf(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 }

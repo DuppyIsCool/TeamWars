@@ -29,7 +29,7 @@ public class GuildWithdraw implements CMD {
                 sender.sendMessage(String.format(ChatColor.BLUE + "Guilds> "+
                 		ChatColor.GRAY +"You withdrew"+
                 		ChatColor.YELLOW+" %s"+
-                		ChatColor.GRAY+ "and now have"+
+                		ChatColor.GRAY+ " and now have"+
                 		ChatColor.YELLOW+" %s", 
                 		Main.getVault().getEconomy().format(r.amount), 
                 		Main.getVault().getEconomy().format(r.balance)));

@@ -1,13 +1,6 @@
 package me.Duppy.TemplarWar.Main;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -64,15 +57,14 @@ public class Main extends JavaPlugin{
 		BukkitTask inviteTask = new InviteCleaner(Plugin.plugin.getConfig().getInt("defaults.invitetime")+1).runTaskTimer(Plugin.plugin, 0, 20);
 		
 		//Upkeep code
-		Timer timer = new Timer();
-        LocalDateTime tomorrowMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).plusDays(1);
-        Date date = Date.from(tomorrowMidnight.atZone(ZoneId.systemDefault()).toInstant());
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                GuildManager.applyUpkeep();
-            }
-        }, date);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+
+			@Override
+			public void run() {
+				GuildManager.applyUpkeep();
+			}
+			//Code
+			}, 1, 20); //1 tick before first execution
 	}
 	
 	public void onDisable() {
