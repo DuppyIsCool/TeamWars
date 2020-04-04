@@ -38,6 +38,10 @@ messages:
             invalidnumberinput: "&9Guilds> &7You must enter a valid number to withdraw"
             withdrawtoomuch: "&9Guilds> &7You cannot withdraw more thank your guild's balance"
             lackfunds: "&9Guilds> &7You lack the funds to deposit that amount"
+            notborderself: "&9Guilds> &7You must claim next to your guild's previous claims"
+            borderothers: "&9Guilds> &7You cannot claim next to another guild"
+            deleteduringraid: "&9Guilds> &7You cannot delete your guild during a raid!"
+            unclaimduringraid: "&9Guilds> &7You cannot unclaim land during a raid!"
     team:
         error:
             invalidname: "&9Teams> &7That is an invalid team name"

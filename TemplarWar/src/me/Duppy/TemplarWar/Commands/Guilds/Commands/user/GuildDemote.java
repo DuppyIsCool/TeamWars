@@ -30,7 +30,11 @@ public class GuildDemote implements CMD {
 				}
 			}
 			g.demoteUser(recipient);
-			p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You have demoted "+ChatColor.YELLOW+rName);
+			String rank = g.getGuildMap().get(recipient);
+			rank = rank.toLowerCase();
+			rank = rank.substring(0, 1).toUpperCase() + rank.substring(1);
+			p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You have demoted "+ChatColor.YELLOW+rName
+					+ChatColor.GRAY + " to "+ChatColor.YELLOW+rank);
 		}
 		
 	}
@@ -40,25 +44,22 @@ public class GuildDemote implements CMD {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
-				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER")) {
+				String rank = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId());
+				if(rank.equalsIgnoreCase("LEADER")) {
 					if(!(args[1].equalsIgnoreCase(p.getName()))) {
 						for(Entry<UUID,String> e: GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().entrySet()) {
-							if(ConfigManager.getPlayername(e.getKey()).equalsIgnoreCase(args[1])) {
-								if(!GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(e.getKey()).equalsIgnoreCase("MEMBER"))
-									return true;
-								else {
-									MessageManager.sendMessage(p, "guild.error.demotemember");
-									return false;
-								}
-							}
-								else {
-									MessageManager.sendMessage(p, "guild.error.lowrole");
-									return false;
+								if(ConfigManager.getPlayername(e.getKey()).equalsIgnoreCase(args[1])) {
+									if(!GuildManager.getGuildFromPlayerUUID(e.getKey()).getGuildMap().get(e.getKey()).equalsIgnoreCase("MEMBER"))
+										return true;
+									else {
+										MessageManager.sendMessage(p, "guild.error.demotemember");
+										return false;
+									}
 								}
 							}
 								MessageManager.sendMessage(p, "error.invalidplayer");
 						}else {
-							MessageManager.sendMessage(p, "guild.error.demoteself"); return false;}
+							MessageManager.sendMessage(p, "guild.error.promoteself"); return false;}
 					}
 					else {
 						MessageManager.sendMessage(p, "guild.error.lowrole");return false;}

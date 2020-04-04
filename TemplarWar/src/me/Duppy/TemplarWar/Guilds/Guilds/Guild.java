@@ -27,7 +27,7 @@ public class Guild {
 	private String name;
 	private boolean raidable;
 	private Team team;
-	private double balance,upkeep;
+	private double balance;
 	private LocalDate dateFounded;
 	private org.bukkit.scoreboard.Team scoreBoardTeam;
 	public Guild() {
@@ -45,7 +45,6 @@ public class Guild {
 		scoreBoardTeam.setAllowFriendlyFire(Plugin.plugin.getConfig().getBoolean("defaults.allowfriendlyfire"));
 		scoreBoardTeam.setCanSeeFriendlyInvisibles(Plugin.plugin.getConfig().getBoolean("defaults.canseefriendlyinvisibles"));
 		dateFounded = LocalDate.now();
-		this.upkeep = (guildMap.size() * 20) + (chunks.size() * 40) + 100;
 	}
 	
 	public HashMap<UUID,String> getGuildMap() {
@@ -129,12 +128,8 @@ public class Guild {
 	}
 	
 	public double getUpkeep() {
-		return upkeep;
+		return (guildMap.size() * 20) + (chunks.size() * 40) + 100;
 	}
-	public void setUpkeep() {
-		this.upkeep = (guildMap.size() * 20) + (chunks.size() * 40) + 100;
-	}
-	
 	//METHODS
 	
 	//Adds a member to the guild given their UUID

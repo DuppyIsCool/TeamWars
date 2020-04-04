@@ -81,11 +81,11 @@ public class GuildManager {
 			t.setAllowFriendlyFire(Plugin.plugin.getConfig().getBoolean("defaults.allowfriendlyfire"));
 			t.setCanSeeFriendlyInvisibles(Plugin.plugin.getConfig().getBoolean("defaults.canseefriendlyinvisibles"));
 			
-			//Setup upkeep
-			g.setUpkeep();
-			
 			//Set the scoreboard team
 			g.setScoreBoardTeam(t);
+			
+			//Set raidable
+			g.setRaidable(false);
 			
 			//Update scoreboard team color (and prefix)
 			g.updateColor();

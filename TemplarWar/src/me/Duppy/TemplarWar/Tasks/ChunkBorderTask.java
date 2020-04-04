@@ -1,6 +1,7 @@
 package me.Duppy.TemplarWar.Tasks;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -38,11 +39,18 @@ public class ChunkBorderTask extends BukkitRunnable {
 	}
 	
 	private void removeBorder() {
-		if(blocks.size() > 0) {
-	    	for(Block b : blocks) {
-    			b.setType((Material) b.getMetadata("SPAWNED").get(0).value());
-    			b.removeMetadata("SPAWNED", Plugin.plugin);
-	    	}
+		if(blocks.size() > 0) { 	
+	    	Iterator<Block> itr = blocks.iterator();
+		    while (itr.hasNext()) {
+		      Block b = itr.next();
+		      if (!b.hasMetadata("SPAWNED")) {
+		        itr.remove();
+		      }
+		      else {
+		    	  b.setType((Material) b.getMetadata("SPAWNED").get(0).value());
+	    		  b.removeMetadata("SPAWNED", Plugin.plugin);
+		      }
+		    }
 		}
 	}
 }

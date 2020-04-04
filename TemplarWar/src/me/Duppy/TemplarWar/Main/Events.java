@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -52,10 +53,11 @@ public class Events implements Listener{
 		Chunk c = e.getBlock().getChunk();
 		
 		//Prevent players from breaking chunk border blocks
-		if(!e.getBlock().getMetadata("SPAWNED").isEmpty())
+		if(!e.getBlock().getMetadata("SPAWNED").isEmpty()) {
+			e.getBlock().setType((Material) e.getBlock().getMetadata("SPAWNED").get(0).value());
+			e.getBlock().removeMetadata("SPAWNED", Plugin.plugin);
 			e.setCancelled(true);
-			
-		
+		}	
 		
 		//Checks to see if the block is claimed
 		if(GuildManager.getChunkOwner(c) != null) {
@@ -70,17 +72,19 @@ public class Events implements Listener{
 		Player p = e.getPlayer();
 		Chunk c = e.getBlockPlaced().getChunk();
 		if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
-			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).isRaidable() && !p.hasPermission("guilds.bypass")) {
-				p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You cannot place blocks during a raid!");
-				e.setCancelled(true);
+			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).isRaidable() && !p.hasPermission("guilds.bypass") 
+					&& GuildManager.getChunkOwner(c) != null) {
+				//Placing in own territory
+				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getName().equalsIgnoreCase(GuildManager.getChunkOwner(c).getName()))
+					p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You cannot place blocks during a raid!");
+					e.setCancelled(true);
 			}
 		}
 		
 		//Checks to see if the block is claimed
-		if(GuildManager.getChunkOwner(c) != null) {
+		if(GuildManager.getChunkOwner(c) != null && !p.hasPermission("guilds.bypass")) {
 			//If the player is not apart of the guild the chunk is claimed by, cancel event
 			if(!GuildManager.getChunkOwner(c).getGuildMap().containsKey(p.getUniqueId())) {
-				p.sendMessage("you placed block: "+e.getBlock().getLocation().toString());
 				e.setCancelled(true);
 			}
 		}
@@ -90,19 +94,20 @@ public class Events implements Listener{
 	public void blockInterract(PlayerInteractEvent event) {
 	    if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 	    	if(GuildManager.getChunkOwner(event.getClickedBlock().getChunk())!= null && !event.getPlayer().hasPermission("guilds.bypass")) {
-	    		//Checks if it is a container block
+	    		//Checks for container blocks
 	    		if(event.getClickedBlock().getState() instanceof InventoryHolder) {
 		    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getLocation().getChunk()).
 		    				getGuildMap().containsKey(event.getPlayer().getUniqueId())){
+		    			//If the guild is not raidable , deny
 			    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).isRaidable()) {
 			    				event.setCancelled(true);
 			    		}
-			    		
-			    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
-			    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
-			    			event.setCancelled(true);
-			    		}
 		    		}
+	    		}
+	    		//If not a container block, if door and not raidable deny
+	    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
+	    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
+	    			event.setCancelled(true);
 	    		}
 	        }
 	    }   

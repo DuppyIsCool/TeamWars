@@ -30,6 +30,7 @@ public class Raid extends BukkitRunnable{
         	counter--;
         } else {
         	g.setLives(Plugin.plugin.getConfig().getInt("defaults.maxlives"));
+        	g.setRaidable(false);
         	Bukkit.broadcastMessage(ChatColor.BLUE + "Raids> "+ChatColor.GREEN +""+ ChatColor.BOLD+ "The raid on "+g.toString() + " has ended!");
             this.cancel();
         }

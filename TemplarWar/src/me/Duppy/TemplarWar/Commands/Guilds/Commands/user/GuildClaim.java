@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,7 +27,6 @@ public class GuildClaim implements CMD{
 			Chunk c = p.getLocation().getChunk();
 			Guild g = GuildManager.getGuildFromPlayerUUID(p.getUniqueId());
 			g.addChunk(c);
-			System.out.println("Added chunk: "+c.toString() + " World: "+c.getWorld().getName());
 			g.setBalance(g.getBalance()-Plugin.plugin.getConfig().getDouble("defaults.claimcost"));
 			MessageManager.sendMessage(p, "guild.chunkclaimed");
 			createBorder(c);
@@ -43,18 +43,24 @@ public class GuildClaim implements CMD{
 				if(g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER") 
 						|| g.getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("ADMIN")){
 					if(g.getClaimSize() < Plugin.plugin.getConfig().getInt("defaults.maxclaimcount")) {
-						if(GuildManager.getChunkOwner(p.getLocation().getChunk()) == null) {
-							if(!GuildManager.chunkmap.containsKey(p.getLocation().getChunk())) {
-								if((g.getBalance()-Plugin.plugin.getConfig().getDouble("defaults.claimcost")) >= 0) {
-									return true;
-								}else{p.sendMessage(ChatColor.BLUE +"Guilds> "+ChatColor.GRAY
-										+"Your guild is lacking the "
-										+ChatColor.YELLOW+"$"+
-										Plugin.plugin.getConfig().getDouble("defaults.claimcost") +ChatColor.GRAY
-										+" to purchase this chunk"); return false;}
-							}else{MessageManager.sendMessage(p, "guild.error.claimtoofast"); return false;}
-						}
-						else{MessageManager.sendMessage(p, "guild.error.claimingclaimedchunk"); return false;}
+						if(isBorderingSelf(p.getLocation().getChunk(),g) || g.getClaimSize() == 0) {
+							if(!isBorderingOtherGuild(p.getLocation().getChunk(),g)) {
+								if(GuildManager.getChunkOwner(p.getLocation().getChunk()) == null) {
+									if(!GuildManager.chunkmap.containsKey(p.getLocation().getChunk())) {
+										if((g.getBalance()-Plugin.plugin.getConfig().getDouble("defaults.claimcost")) >= 0) {
+											return true;
+										}else{p.sendMessage(ChatColor.BLUE +"Guilds> "+ChatColor.GRAY
+												+"Your guild is lacking the "
+												+ChatColor.YELLOW+"$"+
+												Plugin.plugin.getConfig().getDouble("defaults.claimcost") +ChatColor.GRAY
+												+" to purchase this chunk"); return false;}
+									}else{MessageManager.sendMessage(p, "guild.error.claimtoofast"); return false;}
+									
+								}else{MessageManager.sendMessage(p, "guild.error.claimingclaimedchunk"); return false;}
+								
+							}else {MessageManager.sendMessage(p, "guild.error.borderothers");}
+							
+						}else {MessageManager.sendMessage(p, "guild.error.notborderself");}
 					}
 					else {
 						MessageManager.sendMessage(p, "guild.error.maxclaims"); return false;}
@@ -119,6 +125,64 @@ public class GuildClaim implements CMD{
 			blocks.add(b);
 		}
 		GuildManager.chunkmap.put(c, new ChunkBorderTask(time+1,time * 5, c,blocks).runTaskTimer(Plugin.plugin, 0, 20));
+	}
+	
+	
+	private boolean isBorderingSelf(Chunk c, Guild g) {
+		int x = c.getX(); 
+		int z = c.getZ();
+		World w = c.getWorld();
+		Chunk testChunk;
+		
+		//North
+		testChunk = w.getChunkAt(x, z+1);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		//East
+		testChunk = w.getChunkAt(x+1, z);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		//South
+		testChunk = w.getChunkAt(x, z-1);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		//West
+		testChunk = w.getChunkAt(x-1, z);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		return false;
+	}
+	
+	private boolean isBorderingOtherGuild(Chunk c, Guild g) {
+		int x = c.getX(); 
+		int z = c.getZ();
+		World w = c.getWorld();
+		Chunk testChunk;
+		//North
+		testChunk = w.getChunkAt(x, z+1);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(!GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		//East
+		testChunk = w.getChunkAt(x+1, z);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(!GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		//South
+		testChunk = w.getChunkAt(x, z-1);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(!GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		//West
+		testChunk = w.getChunkAt(x-1, z);
+		if(GuildManager.getChunkOwner(testChunk) != null)
+			if(!GuildManager.getChunkOwner(testChunk).getName().equalsIgnoreCase(g.getName()))
+				return true;
+		return false;
 	}
 
 }

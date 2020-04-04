@@ -30,7 +30,11 @@ public class GuildPromote implements CMD {
 				}
 			}
 			g.promoteUser(recipient);
-			p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You have promoted "+ChatColor.YELLOW+rName);
+			String rank = g.getGuildMap().get(recipient);
+			rank = rank.toLowerCase();
+			rank = rank.substring(0, 1).toUpperCase() + rank.substring(1);
+			p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You have promoted "+ChatColor.YELLOW+rName
+					+ChatColor.GRAY + " to "+ChatColor.YELLOW+""+rank);
 		}
 	}
 
@@ -39,15 +43,13 @@ public class GuildPromote implements CMD {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
-				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId()).equalsIgnoreCase("LEADER")) {
+				System.out.println("RANK: "+GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId()));
+				String rank = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId());
+				if(rank.equalsIgnoreCase("LEADER")) {
 					if(!(args[1].equalsIgnoreCase(p.getName()))) {
 						for(Entry<UUID,String> e: GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().entrySet()) {
-							if(ConfigManager.getPlayername(e.getKey()).equalsIgnoreCase(args[1])) {
-									return true;
-							}
-								else {
-									MessageManager.sendMessage(p, "guild.error.lowrole");
-									return false;
+								if(ConfigManager.getPlayername(e.getKey()).equalsIgnoreCase(args[1])) {
+										return true;
 								}
 							}
 								MessageManager.sendMessage(p, "error.invalidplayer");
