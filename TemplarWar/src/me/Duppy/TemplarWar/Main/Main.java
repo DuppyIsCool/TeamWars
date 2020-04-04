@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -77,6 +79,12 @@ public class Main extends JavaPlugin{
 		//Save teams and guilds to config
 		TeamManager.saveTeams();
 		GuildManager.saveGuilds();
+		
+		//Cancel any active  chunk border tasks, reverting border blocks to normal blocks to prevent issues.
+		//This will only occur to prevent reload glitching of border blocks, or upon crashes
+		for(Entry<Chunk, BukkitTask> e : GuildManager.chunkmap.entrySet()) {
+			e.getValue().cancel();
+		}
 		
 		//Save configs
 		cfgm.savePlayers();

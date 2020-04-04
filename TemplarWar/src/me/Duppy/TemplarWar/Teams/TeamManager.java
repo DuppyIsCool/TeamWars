@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
+import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Main.ConfigManager;
 
 public class TeamManager {
 	private static ArrayList<Team> teams;
 	private static ConfigManager cfgm = new ConfigManager();
 	//Begin Getters and Setters
-	public ArrayList<Team> getTeams() {
+	public static ArrayList<Team> getTeams() {
 		return teams;
 	}
 
-	public void setTeams(ArrayList<Team> teams) {
+	public static void setTeams(ArrayList<Team> teams) {
 		TeamManager.teams = teams;
 	}
 	//End Getters and Setters
@@ -33,6 +35,7 @@ public class TeamManager {
 			}
 			t.setColor(cfgm.getTeams().getString(team + ".color"));
 			t.setPlayers(players);
+			t.setGuilds(new ArrayList<Guild>());
 			addTeam(t);
 		}
 	}
@@ -62,6 +65,9 @@ public class TeamManager {
 	public static void removeTeam(Team team) {
 		if(teams.contains(team)) {
 			teams.remove(team);
+		}
+		for(Guild g : team.getGuilds()) {
+			GuildManager.removeGuild(g);
 		}
 	}
 	

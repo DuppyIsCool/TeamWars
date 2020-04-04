@@ -38,7 +38,7 @@ public class GuildCreate implements CMD{
 						}else {MessageManager.sendMessage(p, "guild.error.notenoughfunds"); return false;}
 					}else {MessageManager.sendMessage(p, "guild.error.invalidname"); return false;}
 				}else {MessageManager.sendMessage(p, "team.error.notinteam"); return false;}
-			}else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}
+			}else {MessageManager.sendMessage(p, "guild.error.inguild"); return false;}
 		}
 		return false;
 	}

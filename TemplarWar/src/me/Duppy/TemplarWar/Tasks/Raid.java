@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
+import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Main.Plugin;
 
 public class Raid extends BukkitRunnable{
@@ -24,9 +25,12 @@ public class Raid extends BukkitRunnable{
     public void run() {
         // What you want to schedule goes here
         if (counter > 0) { 
+        	if(!GuildManager.getGuildList().contains(g))
+        		this.cancel();
         	counter--;
         } else {
         	g.setLives(Plugin.plugin.getConfig().getInt("defaults.maxlives"));
+        	g.setRaidable(false);
         	Bukkit.broadcastMessage(ChatColor.BLUE + "Raids> "+ChatColor.GREEN +""+ ChatColor.BOLD+ "The raid on "+g.toString() + " has ended!");
             this.cancel();
         }

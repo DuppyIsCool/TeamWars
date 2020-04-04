@@ -24,7 +24,9 @@ public class GuildDelete implements CMD{
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
 				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(
 				p.getUniqueId()).equalsIgnoreCase("LEADER")) {
-					return true;
+					if(!GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).isRaidable() || p.hasPermission("guilds.bypass")) {
+						return true;
+					}else {MessageManager.sendMessage(p, "guild.error.deleteduringraid"); return false;}
 				}else {MessageManager.sendMessage(p, "guild.error.lowrole"); return false;}
 			}else {MessageManager.sendMessage(p, "guild.error.notinguild"); return false;}
 		}

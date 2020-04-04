@@ -41,7 +41,7 @@ public class GuildJoin implements CMD{
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) == null) {
-				if(InviteManager.hasInvite(p.getUniqueId(), args[1])) {
+				if(InviteManager.hasInvite(p.getUniqueId(), args[1]) || p.hasPermission("guilds.bypass")) {
 					return true;
 				}
 				else

@@ -1,6 +1,7 @@
 package me.Duppy.TemplarWar.Tasks;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -11,15 +12,15 @@ import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Main.Plugin;
 
 public class ChunkBorderTask extends BukkitRunnable {
-	private int counter,claimcounter;
+	private int claimcounter;
 	private Chunk c;
-    private HashMap<Block,Integer> blockmap;
-    public ChunkBorderTask(int counter,int claimcounter,Chunk c, HashMap<Block,Integer> blockmap) {
-    	if (counter < 1 || claimcounter < 1) {
+    private ArrayList<Block> blocks;
+    @SuppressWarnings("unchecked")
+	public ChunkBorderTask(int counter,int claimcounter,Chunk c, ArrayList<Block> blocks) {
+    	if (claimcounter < 1) {
             throw new IllegalArgumentException("Counter must be greater than 1");
         } else {
-            this.counter = counter;
-            this.blockmap = blockmap;
+            this.blocks = (ArrayList<Block>) blocks.clone();
             this.c = c;
             this.claimcounter = claimcounter;
         }
@@ -27,32 +28,29 @@ public class ChunkBorderTask extends BukkitRunnable {
     
 	@Override
 	public void run() {
-		if (counter > 0) { 
-			updateBorder();
-            counter--;
-            
-        } else if(claimcounter > 0) {
+		if(claimcounter > 0) {
         	claimcounter--;
         }
         else {
+        	removeBorder();
         	GuildManager.chunkmap.remove(c);
         	this.cancel();
         }
 	}
-
 	
-	private void updateBorder() {
-		if(blockmap.size() > 0) {
-	    	for(Block b : blockmap.keySet()) {
-	    		if(blockmap.get(b) <= 0) {
-	    			b.setType((Material) b.getMetadata("SPAWNED").get(0).value());
-	    			b.removeMetadata("SPAWNED", Plugin.plugin);
-	    		}
-	    		else{
-	    			blockmap.put(b, blockmap.get(b) -1);
-	    		}
-	    		
-	    	}
+	private void removeBorder() {
+		if(blocks.size() > 0) { 	
+	    	Iterator<Block> itr = blocks.iterator();
+		    while (itr.hasNext()) {
+		      Block b = itr.next();
+		      if (!b.hasMetadata("SPAWNED")) {
+		        itr.remove();
+		      }
+		      else {
+		    	  b.setType((Material) b.getMetadata("SPAWNED").get(0).value());
+	    		  b.removeMetadata("SPAWNED", Plugin.plugin);
+		      }
+		    }
 		}
 	}
 }

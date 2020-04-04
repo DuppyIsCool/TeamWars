@@ -22,6 +22,7 @@ public class Team {
 		this.players.add(creator);
 		setColor("red");
 		this.name = name;
+		this.guilds = new ArrayList<Guild>();
 	}
 	//Start Getter and Setters
 	public ArrayList<UUID> getPlayers() {
@@ -107,6 +108,16 @@ public class Team {
 	
 	public void resetPoints(int points) {
 		this.points = 0;
+	}
+	
+	public void addGuild(Guild g) {
+		if(!guilds.contains(g))
+			guilds.add(g);
+	}
+	
+	public void removeGuild(Guild g) {
+		if(guilds.contains(g))
+			guilds.remove(g);
 	}
 
 	//End methods
