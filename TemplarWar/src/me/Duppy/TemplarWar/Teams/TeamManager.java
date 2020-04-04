@@ -1,8 +1,10 @@
 package me.Duppy.TemplarWar.Teams;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
@@ -25,8 +27,7 @@ public class TeamManager {
 	public static void setupTeams() {
 		teams = new ArrayList<Team>();
 		for(String team : cfgm.getTeams().getKeys(false)) {
-			Team t = new Team();
-			t.setName(team);
+			Team t = new Team(team);
 			t.setPoints(cfgm.getTeams().getInt(team + ".points"));
 			//Get String list and convert it into a UUID list
 			ArrayList<UUID> players = new ArrayList<UUID>();
@@ -63,11 +64,29 @@ public class TeamManager {
 	}
 	
 	public static void removeTeam(Team team) {
+		//Safe removal of guilds if they are apart of inputted team
+		Iterator<Guild> itr = GuildManager.getGuildList().iterator();
+	    while (itr.hasNext()) {
+	        Guild g = itr.next();
+	        if(g.getTeam().getName().equalsIgnoreCase(team.getName())) {
+		        GuildManager.mainScoreboard.getTeam(g.getName()).unregister();
+				//Add player back to general team scoreboard
+				String playername = "";
+				for(Entry<UUID, String> u : g.getGuildMap().entrySet()) {
+					playername = ConfigManager.getPlayername(u.getKey());
+					g.getTeam().getScoreBoardTeam().addEntry(playername);
+				}
+		        itr.remove();
+		        if(g.getTeam().getGuilds().contains(g)) {
+					g.getTeam().removeGuild(g);
+				}
+	        }
+	      
+	    }
+	    //Remove the team
 		if(teams.contains(team)) {
+			team.getScoreBoardTeam().unregister();
 			teams.remove(team);
-		}
-		for(Guild g : team.getGuilds()) {
-			GuildManager.removeGuild(g);
 		}
 	}
 	

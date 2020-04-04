@@ -157,6 +157,12 @@ public class GuildManager {
 	public static void removeGuild(Guild guild) {
 		if(guildList.contains(guild)) {
 			mainScoreboard.getTeam(guild.getName()).unregister();
+			//Add player back to general team scoreboard
+			String playername = "";
+			for(Entry<UUID, String> u : guild.getGuildMap().entrySet()) {
+				playername = ConfigManager.getPlayername(u.getKey());
+				guild.getTeam().getScoreBoardTeam().addEntry(playername);
+			}
 			guildList.remove(guild);
 		}
 		if(guild.getTeam().getGuilds().contains(guild)) {
@@ -180,14 +186,24 @@ public class GuildManager {
 		Iterator<Guild> itr = guildList.iterator();
 	    while (itr.hasNext()) {
 	      Guild g = itr.next();
-	      balanceAfter = g.getBalance()-g.getUpkeep();
+	      balanceAfter = g.getBalance()-(g.getUpkeep()/86400);
 	      if (balanceAfter <= 0) {
 	    	g.getTeam().getGuilds().remove(g);
+	    	mainScoreboard.getTeam(g.getName()).unregister();
 	        itr.remove();
+	      }
+	      else {
+	    	  g.setBalance(balanceAfter);
 	      }
 	    }
 	}
 	
-	
+	public static boolean isTeamName(String name) {
+		for(org.bukkit.scoreboard.Team t : mainScoreboard.getTeams()) {
+			if(t.getName().equalsIgnoreCase(name))
+				return true;
+		}
+		return false;
+	}
 	
 }

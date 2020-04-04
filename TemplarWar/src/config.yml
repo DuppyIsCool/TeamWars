@@ -9,6 +9,7 @@ messages:
         chunkclaimed: "&9Guilds> &7You have claimed this chunk"
         chunkunclaimed: "&9Guilds> &7You have unclaimed this chunk"
         error:
+            takingteamname: "&9Guilds> &7You cannot create a guild with the same name as a team"
             noinvite: "&9Guilds> &7You do not have an invite for that guild"
             invalidname: "&9Guilds> &7Guild names must be alphanumeric and less than 12 characters"
             hasinvite: "&9Guilds> &7You've already sent an invite to that player"
@@ -21,7 +22,7 @@ messages:
             notownchunk: "&9Guilds> &7You do not own this chunk!"
             notenoughfunds: "&9Guilds> &7You lack the funds to create a guild"
             inviteotherteam: "&9Guilds> &7You cannot invite a player from a different team"
-            joinotherteam: "&9Guilds> &7You cannot join a guild apart of a different team"
+            joinotherteam: "&9Guilds> &7You cannot join a guild of a different team"
             kickself: "&9Guilds> &7You cannot kick yourself"
             inviteself: "&9Guilds> &7You cannot invite yourself"
             inviteplayeringuild: "&9Guilds> &7You cannot invite a player who is in a guild"
@@ -32,8 +33,8 @@ messages:
             demotemember: "&9Guilds> &7You cannot demote a member"
             nohomeset: "&9Guilds> &7Your guild does not have a home set"
             alreadyteleporting: "&9Guilds> &7You are already teleporting"
-            movedduringteleport: "&9Guilds> &7Teleportation cancelled, you moved"
-            cancelteleportnotinguild: "&9Guilds> &7Teleportation cancelled, you are not in a guild"
+            movedduringteleport: "&9Guilds> &7Teleportation canceled because you moved"
+            cancelteleportnotinguild: "&9Guilds> &7Teleportation canceled because you are not in a guild"
             sethomeinclaim: "&9Guilds> &7You must set your home inside of your guild's territory"
             invalidnumberinput: "&9Guilds> &7You must enter a valid number to withdraw"
             withdrawtoomuch: "&9Guilds> &7You cannot withdraw more thank your guild's balance"
@@ -45,14 +46,17 @@ messages:
     team:
         error:
             invalidname: "&9Teams> &7That is an invalid team name"
+            nameinuse: "&9Teams> &7That name is already in use"
             inteam: "&9Teams> &7You are already in a team"
             notinteam: "&9Teams> &7You must be in a team to use this command"
             invalidteam: "&9Teams> &7That team does not exist"
             leaveinguild: "&9Teams> &7You cannot leave a team while in a guild"
             invalidcolor: "&9Teams> &7That is not a valid color"
-        colorset: "&9Teams> &7Team color sucessfully set"
+        colorset: "&9Teams> &7Team color successfully set"
 defaults:
     maxclaimcount: 10
+    upkeepcostpermember: 200
+    upkeepcostperclaim: 400
     claimcost: 500
     maxbankamount: 18000
     raidtime: 300
