@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -16,18 +17,18 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
+import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Tasks.Raid;
 
 public class Events implements Listener{
-
 	@EventHandler
 	public void playersConfigSetup(PlayerJoinEvent e) {
 		if(!ConfigManager.getPlayers().contains(e.getPlayer().getUniqueId().toString())) {
@@ -46,14 +47,6 @@ public class Events implements Listener{
 	}
 	
 	@EventHandler
-	public void onFishEvent(PlayerFishEvent e) {
-		Chunk c = e.getPlayer().getLocation().getChunk();
-		if(GuildManager.getChunkOwner(c) != null) {
-			e.getPlayer().sendMessage("This chunk is claimed by "+GuildManager.getChunkOwner(c).toString());
-		}
-	}
-	
-	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		Chunk c = e.getBlock().getChunk();
@@ -61,12 +54,13 @@ public class Events implements Listener{
 		//Prevent players from breaking chunk border blocks
 		if(!e.getBlock().getMetadata("SPAWNED").isEmpty())
 			e.setCancelled(true);
+			
 		
 		
 		//Checks to see if the block is claimed
 		if(GuildManager.getChunkOwner(c) != null) {
 			//If the player is not apart of the guild the chunk is claimed by, cancel event
-			if(!GuildManager.getChunkOwner(c).getGuildMap().containsKey(p.getUniqueId()))
+			if(!GuildManager.getChunkOwner(c).getGuildMap().containsKey(p.getUniqueId()) && !p.hasPermission("guilds.bypass"))
 				e.setCancelled(true);
 		}
 	}
@@ -74,29 +68,40 @@ public class Events implements Listener{
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
 		Player p = e.getPlayer();
-		Chunk c = e.getBlock().getChunk();
+		Chunk c = e.getBlockPlaced().getChunk();
+		if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
+			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).isRaidable() && !p.hasPermission("guilds.bypass")) {
+				p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"You cannot place blocks during a raid!");
+				e.setCancelled(true);
+			}
+		}
 		
 		//Checks to see if the block is claimed
 		if(GuildManager.getChunkOwner(c) != null) {
 			//If the player is not apart of the guild the chunk is claimed by, cancel event
-			if(!GuildManager.getChunkOwner(c).getGuildMap().containsKey(p.getUniqueId()))
+			if(!GuildManager.getChunkOwner(c).getGuildMap().containsKey(p.getUniqueId())) {
+				p.sendMessage("you placed block: "+e.getBlock().getLocation().toString());
 				e.setCancelled(true);
+			}
 		}
 	}
 	//Used to prevent players from opening doors/chests in a guild
 	@EventHandler
 	public void blockInterract(PlayerInteractEvent event) {
 	    if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-	    	if(GuildManager.getChunkOwner(event.getClickedBlock().getChunk())!= null) {
-	    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getLocation().getChunk()).
-	    				getGuildMap().containsKey(event.getPlayer().getUniqueId())){
-		    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).isRaidable()) {
-		    				event.setCancelled(true);
-		    		}
-		    		
-		    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
-		    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
-		    			event.setCancelled(true);
+	    	if(GuildManager.getChunkOwner(event.getClickedBlock().getChunk())!= null && !event.getPlayer().hasPermission("guilds.bypass")) {
+	    		//Checks if it is a container block
+	    		if(event.getClickedBlock().getState() instanceof InventoryHolder) {
+		    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getLocation().getChunk()).
+		    				getGuildMap().containsKey(event.getPlayer().getUniqueId())){
+			    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).isRaidable()) {
+			    				event.setCancelled(true);
+			    		}
+			    		
+			    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
+			    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
+			    			event.setCancelled(true);
+			    		}
 		    		}
 	    		}
 	        }
@@ -114,8 +119,27 @@ public class Events implements Listener{
     }
 	
 	@EventHandler
+	//This checks if they moved during 'guild home' teleport
+	public void onTeleportMove(PlayerMoveEvent e) {
+		Location movedFrom = e.getFrom();
+        Location movedTo = e.getTo();
+        //Checks if the player moved, ignoring yaw and pitch
+        if (movedFrom.getBlockX() != movedTo.getBlockX() || 
+        		movedFrom.getBlockY() != movedTo.getBlockY() || 
+        		movedFrom.getBlockZ() != movedTo.getBlockZ()) {
+        	
+        	if(GuildManager.teleportingPlayers.containsKey(e.getPlayer())) {
+    			MessageManager.sendMessage(e.getPlayer(), "guild.error.movedduringteleport");
+    			GuildManager.teleportingPlayers.get(e.getPlayer()).cancel();
+    			GuildManager.teleportingPlayers.remove(e.getPlayer());
+    		}
+        }
+	}
+	
+	@EventHandler
 	//This is for messaging players when they move between claims
 	public void onPlayerMove(PlayerMoveEvent e) {
+		
 		Chunk leaveChunk = e.getFrom().getChunk();
 		Chunk enterChunk = e.getTo().getChunk();
 		Player p = e.getPlayer();

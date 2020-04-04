@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -21,6 +22,7 @@ import me.Duppy.TemplarWar.Main.Plugin;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 
 public class GuildManager {
+	public static HashMap<Player,BukkitTask> teleportingPlayers = new HashMap<Player,BukkitTask>();
 	public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	private static ArrayList<Guild> guildList = new ArrayList<Guild>();
 	public static HashMap<Chunk,BukkitTask> chunkmap = new HashMap<Chunk,BukkitTask>();
@@ -87,6 +89,7 @@ public class GuildManager {
 			
 			//Update scoreboard team color (and prefix)
 			g.updateColor();
+			
 			//Add guild to guild manager list
 			GuildManager.addGuild(g);
 			
@@ -145,6 +148,9 @@ public class GuildManager {
 	public static void addGuild(Guild guild) {
 		if(!(guildList.contains(guild)))
 			guildList.add(guild);
+		if(!guild.getTeam().getGuilds().contains(guild)) {
+			guild.getTeam().addGuild(guild);
+		}
 	}
 	
 	//Removes a guild from the guild list
@@ -152,6 +158,9 @@ public class GuildManager {
 		if(guildList.contains(guild)) {
 			mainScoreboard.getTeam(guild.getName()).unregister();
 			guildList.remove(guild);
+		}
+		if(guild.getTeam().getGuilds().contains(guild)) {
+			guild.getTeam().removeGuild(guild);
 		}
 	}
 	
@@ -173,6 +182,7 @@ public class GuildManager {
 	      Guild g = itr.next();
 	      balanceAfter = g.getBalance()-g.getUpkeep();
 	      if (balanceAfter <= 0) {
+	    	g.getTeam().getGuilds().remove(g);
 	        itr.remove();
 	      }
 	    }

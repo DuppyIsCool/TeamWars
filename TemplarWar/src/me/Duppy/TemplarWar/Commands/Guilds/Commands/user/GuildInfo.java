@@ -26,7 +26,12 @@ public class GuildInfo implements CMD {
 			
 			//Start of inventory creation
 			Player p = (Player) sender;
-			Guild g = GuildManager.getGuildFromPlayerUUID(p.getUniqueId());
+			Guild g = null;
+			if(args.length == 1 || args.length == 0)
+				g = GuildManager.getGuildFromPlayerUUID(p.getUniqueId());
+			else if(args.length == 2) {
+				g = GuildManager.getGuildFromGuildName(args[1]);
+			}
 			
 			//Create a list of online guild members
 			ArrayList<Player> onlinePlayers = new ArrayList<Player>();
@@ -121,12 +126,23 @@ public class GuildInfo implements CMD {
 	public boolean canExecute(CommandSender sender, String[] args) {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
-			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
-				return true;
+			if(args.length == 2) {
+				if(GuildManager.getGuildFromGuildName(args[1]) != null)
+					return true;
 			}
-			else {
-				MessageManager.sendMessage(p, "guild.error.notinguild");
-				return false;
+			else
+			{
+				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
+					return true;
+				}
+				else if(args.length == 2) {
+					MessageManager.sendMessage(p, "guild.error.invalidguild");
+					return false;
+				}
+				else {
+					MessageManager.sendMessage(p, "guild.error.notinguild");
+					return false;
+				}
 			}
 		}
 		return false;

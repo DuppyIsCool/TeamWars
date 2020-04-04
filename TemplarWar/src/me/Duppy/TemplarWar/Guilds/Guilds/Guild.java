@@ -112,6 +112,8 @@ public class Guild {
 	public void setBalance(double balance) {
 		if(balance > Plugin.plugin.getConfig().getDouble("defaults.maxbankamount"))
 			this.balance = Plugin.plugin.getConfig().getDouble("defaults.maxbankamount");
+		else
+			this.balance = balance;
 	}
 	
 	public void setDateFounded(LocalDate localDate) {

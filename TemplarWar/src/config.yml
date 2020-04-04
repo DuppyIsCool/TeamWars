@@ -8,7 +8,6 @@ messages:
     guild:
         chunkclaimed: "&9Guilds> &7You have claimed this chunk"
         chunkunclaimed: "&9Guilds> &7You have unclaimed this chunk"
-        
         error:
             noinvite: "&9Guilds> &7You do not have an invite for that guild"
             invalidname: "&9Guilds> &7Guild names must be alphanumeric and less than 12 characters"
@@ -28,6 +27,17 @@ messages:
             inviteplayeringuild: "&9Guilds> &7You cannot invite a player who is in a guild"
             claimingclaimedchunk: "&9Guilds> &7You cannot claim land that is already claimed"
             claimtoofast: "&9Guilds> &7You cannot claim this land because it was claimed recently"
+            promoteself: "&9Guilds> &7You cannot promote yourself"
+            demoteself: "&9Guilds> &7You cannot demote yourself"
+            demotemember: "&9Guilds> &7You cannot demote a member"
+            nohomeset: "&9Guilds> &7Your guild does not have a home set"
+            alreadyteleporting: "&9Guilds> &7You are already teleporting"
+            movedduringteleport: "&9Guilds> &7Teleportation cancelled, you moved"
+            cancelteleportnotinguild: "&9Guilds> &7Teleportation cancelled, you are not in a guild"
+            sethomeinclaim: "&9Guilds> &7You must set your home inside of your guild's territory"
+            invalidnumberinput: "&9Guilds> &7You must enter a valid number to withdraw"
+            withdrawtoomuch: "&9Guilds> &7You cannot withdraw more thank your guild's balance"
+            lackfunds: "&9Guilds> &7You lack the funds to deposit that amount"
     team:
         error:
             invalidname: "&9Teams> &7That is an invalid team name"
@@ -39,6 +49,7 @@ messages:
         colorset: "&9Teams> &7Team color sucessfully set"
 defaults:
     maxclaimcount: 10
+    claimcost: 500
     maxbankamount: 18000
     raidtime: 300
     maxlives: 10
@@ -48,5 +59,4 @@ defaults:
     canseefriendlyinvisibles: true
     backuptime: 600
     invitetime: 300
-constants:
-    upkeeptimer: 86400
+    tptime: 15
