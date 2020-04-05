@@ -200,20 +200,25 @@ public class Events implements Listener{
 	public void blockInterract(PlayerInteractEvent event) {
 	    if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 	    	if(GuildManager.getChunkOwner(event.getClickedBlock().getChunk())!= null && !event.getPlayer().hasPermission("guilds.bypass")) {
-	    		//Checks for container blocks
-	    		if(event.getClickedBlock().getState() instanceof InventoryHolder) {
-		    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getLocation().getChunk()).
-		    				getGuildMap().containsKey(event.getPlayer().getUniqueId())){
-		    			//If the guild is not raidable , deny
-			    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).isRaidable()) {
-			    				event.setCancelled(true);
+	    		if(GuildManager.getGuildFromPlayerUUID(event.getPlayer().getUniqueId()) != null) {
+	    			if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).getName().equalsIgnoreCase(
+					GuildManager.getGuildFromPlayerUUID(event.getPlayer().getUniqueId()).getName())) {
+			    		//Checks for container blocks
+			    		if(event.getClickedBlock().getState() instanceof InventoryHolder) {
+				    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getLocation().getChunk()).
+				    				getGuildMap().containsKey(event.getPlayer().getUniqueId())){
+				    			//If the guild is not raidable , deny
+					    		if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).isRaidable()) {
+					    				event.setCancelled(true);
+					    		}
+				    		}
 			    		}
-		    		}
-	    		}
-	    		//If not a container block, if door and not raidable deny
-	    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
-	    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
-	    			event.setCancelled(true);
+			    		//If not a container block, if door and not raidable deny
+			    		else if(event.getClickedBlock().getType().toString().toLowerCase().contains("door") 
+			    				|| event.getClickedBlock().getType().toString().toLowerCase().contains("gate")) {
+			    			event.setCancelled(true);
+			    		}
+	    			}
 	    		}
 	        }
 	    }   
