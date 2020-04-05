@@ -34,6 +34,7 @@ public class Team {
 		this.scoreBoardTeam.addEntry(ConfigManager.getPlayername(creator));
 		this.name = name;
 		this.guilds = new ArrayList<Guild>();
+		this.points = 0;
 	}
 	//Start Getter and Setters
 	public ArrayList<UUID> getPlayers() {

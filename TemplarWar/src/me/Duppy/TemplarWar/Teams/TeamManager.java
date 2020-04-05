@@ -33,6 +33,7 @@ public class TeamManager {
 			ArrayList<UUID> players = new ArrayList<UUID>();
 			for(String e : (ArrayList<String>) cfgm.getTeams().getStringList(team + ".members")) {
 				players.add(UUID.fromString(e));
+				t.getScoreBoardTeam().addEntry(ConfigManager.getPlayername(UUID.fromString(e)));
 			}
 			t.setColor(cfgm.getTeams().getString(team + ".color"));
 			t.setPlayers(players);

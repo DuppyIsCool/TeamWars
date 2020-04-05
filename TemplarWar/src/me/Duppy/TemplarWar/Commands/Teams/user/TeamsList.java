@@ -21,10 +21,12 @@ public class TeamsList implements CMD{
 				for(Team t : TeamManager.getTeams()) {
 					if(t.getGuilds() != null)
 						sender.sendMessage(ChatColor.YELLOW + t.getName() 
-						+ ChatColor.GRAY+ " : "+ChatColor.GREEN + ""+t.getGuilds().size() + " "+ChatColor.YELLOW+"Guilds");
+						+ ChatColor.GRAY+ " : "+ChatColor.GREEN + ""+t.getGuilds().size() + " "+ChatColor.YELLOW+"Guilds"+ ChatColor.GRAY+ " : "
+						+ChatColor.GREEN + t.getPoints() + ChatColor.YELLOW + " Points");
 					else
 						sender.sendMessage(ChatColor.YELLOW + t.getName() 
-						+ ChatColor.GRAY+ " : "+ChatColor.GREEN + ""+"0" + " "+ChatColor.YELLOW+"Guilds");
+						+ ChatColor.GRAY+ " : "+ChatColor.GREEN + ""+"0" + " "+ChatColor.YELLOW+"Guilds"+ ChatColor.GRAY+ " : "
+						+ChatColor.GREEN + t.getPoints() + ChatColor.YELLOW + " Points");
 				}
 			}
 		}

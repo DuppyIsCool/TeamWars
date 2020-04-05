@@ -119,8 +119,9 @@ public class Events implements Listener{
 	    if(TeamManager.getTeam(attacker.getUniqueId())!= null) {
 	    	if(TeamManager.getTeam(victim.getUniqueId()) != null)
 	    		if(TeamManager.getTeam(attacker.getUniqueId()).getName().equalsIgnoreCase(
-	    				TeamManager.getTeam(victim.getUniqueId()).getName()))
-	        e.setCancelled(true);
+	    				TeamManager.getTeam(victim.getUniqueId()).getName())) {
+	    				e.setCancelled(true);
+	    		}
 	    }
 	}
 	
@@ -163,9 +164,10 @@ public class Events implements Listener{
 	            if(TeamManager.getTeam(attacker.getUniqueId())!= null) {
 	    	    	if(TeamManager.getTeam(victim.getUniqueId()) != null)
 	    	    		if(TeamManager.getTeam(attacker.getUniqueId()).getName().equalsIgnoreCase(
-	    	    				TeamManager.getTeam(victim.getUniqueId()).getName()))
+	    	    				TeamManager.getTeam(victim.getUniqueId()).getName()) && !victim.equals(attacker)) {
 	    	    			// Reduce the effect of this potion to zero (victim only)
 	    					e.setIntensity(victim, 0);
+	    	    		}
 	            }
 	        }
 	    }

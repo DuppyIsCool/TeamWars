@@ -19,6 +19,7 @@ import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildPromote;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildSethome;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildUnclaim;
 import me.Duppy.TemplarWar.Commands.Guilds.Commands.user.GuildWithdraw;
+import me.Duppy.TemplarWar.Commands.Teams.user.TeamsAddpoints;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsCreate;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsDelete;
 import me.Duppy.TemplarWar.Commands.Teams.user.TeamsJoin;
@@ -35,7 +36,7 @@ public class Commands implements CommandExecutor {
 	private TeamsDelete delete = new TeamsDelete();
 	private TeamsSetcolor setcolor = new TeamsSetcolor();
 	private TeamsList list = new TeamsList();
-	
+	private TeamsAddpoints addpoints = new TeamsAddpoints();
 	//GUILDS
 	private GuildCreate gcreate = new GuildCreate();
 	private GuildDelete gdelete = new GuildDelete();
@@ -63,7 +64,13 @@ public class Commands implements CommandExecutor {
 				return true;
 			}
 			
+			
 			//Begin commands
+			if(args[0].equalsIgnoreCase("addpoints")) {
+				addpoints.execute(sender, args);
+				return true;
+			}
+			
 			if(args[0].equalsIgnoreCase("create")) {
 				if(!sender.hasPermission("teams.create")) 
 				{MessageManager.sendMessage(sender, "error.nopermission"); return true;}
