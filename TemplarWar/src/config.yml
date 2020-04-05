@@ -63,7 +63,7 @@ defaults:
     maxlives: 10
     maxplayersperguild: 20
     guildcreateprice: 1000
-    allowfriendlyfire: false
+    allowfriendlyfire: true
     canseefriendlyinvisibles: true
     backuptime: 600
     invitetime: 300

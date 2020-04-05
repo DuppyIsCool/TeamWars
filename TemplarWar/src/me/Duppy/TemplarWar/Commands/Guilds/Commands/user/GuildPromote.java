@@ -43,7 +43,6 @@ public class GuildPromote implements CMD {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
 			if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
-				System.out.println("RANK: "+GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId()));
 				String rank = GuildManager.getGuildFromPlayerUUID(p.getUniqueId()).getGuildMap().get(p.getUniqueId());
 				if(rank.equalsIgnoreCase("LEADER")) {
 					if(!(args[1].equalsIgnoreCase(p.getName()))) {

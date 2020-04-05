@@ -13,6 +13,7 @@ import me.Duppy.TemplarWar.Econ.VaultAPI;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Tasks.Backups;
 import me.Duppy.TemplarWar.Tasks.InviteCleaner;
+import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
 
@@ -62,6 +63,24 @@ public class Main extends JavaPlugin{
 			@Override
 			public void run() {
 				GuildManager.applyUpkeep();
+				for(Player p :Bukkit.getOnlinePlayers()) {
+					Team highestTeam = null;
+					for(Team t : TeamManager.getTeams()) {
+						if(highestTeam == null)
+							highestTeam = t;
+						else if(t.getPoints() > highestTeam.getPoints())
+							highestTeam = t;
+					}
+					if(highestTeam != null) {
+						p.setPlayerListHeader(ChatColor.GOLD+""+ChatColor.BOLD + "Leading team: "+ChatColor.YELLOW+""+highestTeam.getName()
+						+ChatColor.GOLD + ""+ChatColor.BOLD + " - "+ChatColor.YELLOW + highestTeam.getPoints() + " "+ChatColor.GOLD+""
+						+ChatColor.BOLD + "Points");
+					}
+					else {
+						p.setPlayerListHeader(ChatColor.GOLD+""+ChatColor.BOLD + "Leading team: "+ChatColor.RED+"None");
+					}
+					
+				}
 			}
 			//Code
 			}, 1, 20); //1 tick before first execution
