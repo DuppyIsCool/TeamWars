@@ -135,21 +135,23 @@ public class GuildInfo implements CMD {
 	public boolean canExecute(CommandSender sender, String[] args) {
 		if(sender instanceof Player) {
 			Player p = (Player) sender;
-			if(args.length == 2) {
-				if(GuildManager.getGuildFromGuildName(args[1]) != null)
-					return true;
-			}
-			else
-			{
+			//If only 1 argument, test if they are in a guild, if not, return false
+			if(args.length == 1) {
 				if(GuildManager.getGuildFromPlayerUUID(p.getUniqueId()) != null) {
 					return true;
 				}
-				else if(args.length == 2) {
-					MessageManager.sendMessage(p, "guild.error.invalidguild");
-					return false;
-				}
 				else {
 					MessageManager.sendMessage(p, "guild.error.notinguild");
+					return false;
+				}
+			}
+			//If 2 arguments, if the 2nd argument is  a valid guild, return true, else, return false with error message
+			else if (args.length == 2) {
+				if(GuildManager.getGuildFromGuildName(args[1]) != null){
+					return true;
+				}
+				else {
+					p.sendMessage(ChatColor.BLUE + "Guilds> "+ChatColor.GRAY+"Cannot find a guild named "+ChatColor.YELLOW+args[1]);
 					return false;
 				}
 			}
@@ -159,14 +161,12 @@ public class GuildInfo implements CMD {
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Returns info about a guild";
 	}
 
 	@Override
 	public String getUsage() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/g info [guild]";
 	}
 	
 	private static double round(double value, int places) {

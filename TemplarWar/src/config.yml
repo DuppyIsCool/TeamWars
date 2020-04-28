@@ -52,6 +52,7 @@ messages:
             invalidteam: "&9Teams> &7That team does not exist"
             leaveinguild: "&9Teams> &7You cannot leave a team while in a guild"
             invalidcolor: "&9Teams> &7That is not a valid color"
+            memberaddpoints: "&9Teams> &7You must be a member of this team to add points to it"
         colorset: "&9Teams> &7Team color successfully set"
 defaults:
     maxclaimcount: 10
@@ -59,12 +60,12 @@ defaults:
     upkeepcostperclaim: 400
     claimcost: 500
     maxbankamount: 18000
-    raidtime: 300
+    raidtime: 900
     maxlives: 10
     maxplayersperguild: 20
     guildcreateprice: 1000
     allowfriendlyfire: true
     canseefriendlyinvisibles: true
-    backuptime: 600
+    backuptime: 1200
     invitetime: 300
     tptime: 15

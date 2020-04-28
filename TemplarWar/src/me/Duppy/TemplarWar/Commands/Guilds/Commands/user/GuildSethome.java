@@ -45,14 +45,12 @@ public class GuildSethome implements CMD{
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Sets a guild's home";
 	}
 
 	@Override
 	public String getUsage() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/g sethome";
 	}
 
 }

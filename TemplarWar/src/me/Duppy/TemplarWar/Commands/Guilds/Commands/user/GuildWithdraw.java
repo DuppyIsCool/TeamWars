@@ -69,14 +69,12 @@ public class GuildWithdraw implements CMD {
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Withdraws money from your guild";
 	}
 
 	@Override
 	public String getUsage() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/g withdraw [amount]";
 	}
 	private static double round(double value, int places) {
 	    if (places < 0) throw new IllegalArgumentException();

@@ -42,14 +42,12 @@ public class GuildUnclaim implements CMD{
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Unclaims the chunk you are in";
 	}
 
 	@Override
 	public String getUsage() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/g unclaim";
 	}
 
 }

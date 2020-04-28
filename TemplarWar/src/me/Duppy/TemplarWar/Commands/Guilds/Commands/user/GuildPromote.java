@@ -66,14 +66,12 @@ public class GuildPromote implements CMD {
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Promotes a member in the guild";
 	}
 
 	@Override
 	public String getUsage() {
-		// TODO Auto-generated method stub
-		return null;
+		return "/g promote [user]";
 	}
 
 }

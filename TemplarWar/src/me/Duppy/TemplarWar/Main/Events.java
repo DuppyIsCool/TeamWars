@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -34,6 +33,7 @@ import me.Duppy.TemplarWar.Guilds.Guilds.Guild;
 import me.Duppy.TemplarWar.Guilds.Guilds.GuildManager;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
 import me.Duppy.TemplarWar.Tasks.Raid;
+import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 
 public class Events implements Listener{
@@ -220,18 +220,31 @@ public class Events implements Listener{
 			    		}
 	    			}
 	    		}
+	    		if(GuildManager.getGuildFromPlayerUUID(event.getPlayer().getUniqueId())!= null) {
+	    			if(!GuildManager.getChunkOwner(event.getClickedBlock().getChunk()).getName().equalsIgnoreCase(
+	    					GuildManager.getGuildFromPlayerUUID(event.getPlayer().getUniqueId()).getName()))
+	    				event.setCancelled(true);
+	    		}
+	    		else
+	    			event.setCancelled(true);
 	        }
 	    }   
     }
 	@EventHandler
 	//Prevents creepers and tnt from exploding guild claims if the guild is not raidable
 	public void onEntityExplode(EntityExplodeEvent event) {
-	    if (event.getEntity() instanceof Creeper || event.getEntity() instanceof TNTPrimed) {
+	    if (event.getEntity() instanceof TNTPrimed) {
 	        for (Block block : new ArrayList<Block>(event.blockList()))
 	            if(GuildManager.getChunkOwner(block.getChunk())!= null)
 	            	if(!GuildManager.getChunkOwner(block.getChunk()).isRaidable())
 	            		event.blockList().remove(block);
         }
+	    //This only allows for TNT to break guild blocks during a raid
+	    else {
+	    	for (Block block : new ArrayList<Block>(event.blockList()))
+	            if(GuildManager.getChunkOwner(block.getChunk())!= null)
+            		event.blockList().remove(block);
+	    }
     }
 	
 	@EventHandler
@@ -318,7 +331,24 @@ public class Events implements Listener{
 				else if ((g.getLives()-1) > 0)
 					g.setLives(g.getLives()-1);
 			}
-			
+			if(p.getKiller() instanceof Player) {
+				Player killer = (Player) p.getKiller();
+				
+				if(TeamManager.getTeam(killer.getUniqueId()) != null && TeamManager.getTeam(p.getUniqueId())!=null) {
+					Team kteam = TeamManager.getTeam(killer.getUniqueId());
+					Team pteam = TeamManager.getTeam(p.getUniqueId());
+					
+					if(!kteam.getName().equalsIgnoreCase(pteam.getName())) {
+						if(GuildManager.getGuildFromPlayerUUID(killer.getUniqueId())!=null) {
+							Guild g = GuildManager.getGuildFromPlayerUUID(killer.getUniqueId());
+							
+							if(g.getLives()+1 <= Plugin.plugin.getConfig().getInt("defaults.maxlives")) {
+								g.setLives(g.getLives()+1);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
