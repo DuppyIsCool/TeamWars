@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.Duppy.TemplarWar.Commands.CMD;
 import me.Duppy.TemplarWar.Guilds.Guilds.MessageManager;
+import me.Duppy.TemplarWar.Main.Main;
 import me.Duppy.TemplarWar.Teams.Team;
 import me.Duppy.TemplarWar.Teams.TeamManager;
 import net.md_5.bungee.api.ChatColor;
@@ -14,10 +15,13 @@ public class TeamsAddpoints implements CMD{
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if(canExecute(sender,args)) {
+			Player p = (Player) sender;
 			Team t = TeamManager.getTeam(args[1]);
 			t.setPoints(t.getPoints() + Integer.parseInt(args[2]));
 			sender.sendMessage(ChatColor.BLUE + "Teams> "+ChatColor.GRAY+"Added "+ChatColor.YELLOW+Integer.parseInt(args[2])+
 					ChatColor.GRAY + " points to team "+t.getName());
+			//Remove amount from player's balance
+			Main.getVault().getEconomy().withdrawPlayer(p,Integer.parseInt(args[2]));
 		}
 	}
 
@@ -28,14 +32,16 @@ public class TeamsAddpoints implements CMD{
 				if(TeamManager.teamExists(args[1])) {
 					if(isInteger(args[2])) {
 						if(!(sender instanceof Player))
-							return true;
+							return false;
 						else {
 							Player p = (Player) sender;
 							if(!p.hasPermission("teams.bypass")) {
 								if(TeamManager.getTeam(p.getUniqueId())!=null) {
 									if(TeamManager.getTeam(p.getUniqueId()).getName()
 											.equalsIgnoreCase(TeamManager.getTeam(args[1]).getName())) {
-										return true;
+										if(Main.getVault().getEconomy().getBalance(p) >= Integer.parseInt(args[2])) {
+											return true;
+										}else {MessageManager.sendMessage(p, "team.error.lackfunds"); return false;}
 									}else {MessageManager.sendMessage(sender, "team.error.memberaddpoints"); return false;}
 								}else {MessageManager.sendMessage(sender, "team.error.notinteam"); return false;}
 							}

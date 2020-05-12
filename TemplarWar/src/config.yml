@@ -53,6 +53,7 @@ messages:
             leaveinguild: "&9Teams> &7You cannot leave a team while in a guild"
             invalidcolor: "&9Teams> &7That is not a valid color"
             memberaddpoints: "&9Teams> &7You must be a member of this team to add points to it"
+            lackfunds: "&9Teams> &7You lack the funds to buy that amount of points"
         colorset: "&9Teams> &7Team color successfully set"
 defaults:
     maxclaimcount: 10
