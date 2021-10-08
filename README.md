@@ -12,6 +12,7 @@ This plugin is meant for a custom server I've worked for. Each player will join 
 * Depends on Vault for economy/Guild Upkeep. Will Error and crash without it.
 
 
+A permissions plugin, such as LuckPerms, is reccomended for managing the user permissions defined in the plugin.yml
 ## Help
 
 /team help or /guild help will bring up the list of commands and their functions
