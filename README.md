@@ -33,8 +33,3 @@ DuppyIsCool
 
 THIS PROJECT IS NO LONGER BEING MAINTAINED. 
 It was tested and functional on 1.13.2. Higher versions do not work.
-
-## License
-
-This project is licensed under the GNU License - see the LICENSE file for details
-
